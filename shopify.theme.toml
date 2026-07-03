@@ -1,0 +1,10 @@
+# Shopify CLI Theme konfigurace
+# Vyplnte svuj store URL a pristupove udaje
+
+[environments.production]
+store = "vas-obchod.myshopify.com"
+# theme = "ID_VASEHO_TEMATU"  # Odkomentujte a doplnte po prvnim deployi
+
+[environments.development]
+store = "vas-obchod.myshopify.com"
+# theme = "ID_DEV_TEMATU"
