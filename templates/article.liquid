@@ -1,0 +1,5 @@
+<div class="container page-content">
+  <h1>{{ article.title }}</h1>
+  <p style="color: var(--color-text-muted); margin-bottom: 2rem;">{{ article.published_at | date: '%d. %m. %Y' }} | {{ article.author }}</p>
+  <div class="rte">{{ article.content }}</div>
+</div>

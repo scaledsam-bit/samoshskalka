@@ -1,0 +1,81 @@
+<section class="hero">
+  {% if section.settings.image %}
+    <div class="hero-bg" style="background-image: url('{{ section.settings.image | image_url: width: 1920 }}')"></div>
+  {% else %}
+    <div class="hero-bg" style="background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-bg) 100%)"></div>
+  {% endif %}
+
+  <div class="container hero-content">
+    {% if section.settings.badge != blank %}
+      <span class="hero-badge">{{ section.settings.badge }}</span>
+    {% endif %}
+    <h1>{{ section.settings.heading }}</h1>
+    <p>{{ section.settings.subheading }}</p>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      {% if section.settings.button_text != blank %}
+        <a href="{{ section.settings.button_url }}" class="btn btn-primary">{{ section.settings.button_text }}</a>
+      {% endif %}
+      {% if section.settings.button_text_2 != blank %}
+        <a href="{{ section.settings.button_url_2 }}" class="btn btn-outline">{{ section.settings.button_text_2 }}</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Obrazek na pozadi"
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Stitek",
+      "default": "Novinka 2026"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Nadpis",
+      "default": "Polepy na motorky"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Podnadpis",
+      "default": "Profesionalni polepy, ktere vas odlisi od ostatnich. Prvotrodni material, presny strich."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Text tlacitka",
+      "default": "Prozkoumat polepy"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Odkaz tlacitka"
+    },
+    {
+      "type": "text",
+      "id": "button_text_2",
+      "label": "Text druheho tlacitka",
+      "default": "O nas"
+    },
+    {
+      "type": "url",
+      "id": "button_url_2",
+      "label": "Odkaz druheho tlacitka"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero banner"
+    }
+  ]
+}
+{% endschema %}

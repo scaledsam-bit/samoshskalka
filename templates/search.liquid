@@ -1,0 +1,35 @@
+<div class="container" style="padding: 4rem 0;">
+  <div class="collection-header">
+    <h1>Vysledky hledani</h1>
+  </div>
+
+  {% if search.performed %}
+    {% if search.results_count > 0 %}
+      <p style="text-align: center; color: var(--color-text-muted); margin-bottom: 2rem;">
+        Nalezeno {{ search.results_count }} vysledku pro "{{ search.terms }}"
+      </p>
+      <div class="products-grid">
+        {% for item in search.results %}
+          {% if item.object_type == 'product' %}
+            {% render 'product-card', product: item %}
+          {% else %}
+            <div class="product-card">
+              <a href="{{ item.url }}">
+                <div class="product-card-info">
+                  <h3 class="product-card-title">{{ item.title }}</h3>
+                  <p style="color: var(--color-text-muted); font-size: 0.85rem;">{{ item.content | strip_html | truncatewords: 20 }}</p>
+                </div>
+              </a>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h2>Nic jsme nenasli</h2>
+        <p>Zkuste jiny hledany vyraz.</p>
+        <a href="/collections/all" class="btn btn-primary">Prozkoumat polepy</a>
+      </div>
+    {% endif %}
+  {% endif %}
+</div>

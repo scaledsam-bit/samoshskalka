@@ -1,0 +1,29 @@
+<div class="container page-content">
+  <h1>Muj ucet</h1>
+  <p style="color: var(--color-text-muted); margin-bottom: 2rem;">Vitejte, {{ customer.first_name }}!</p>
+
+  <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Historie objednavek</h2>
+
+  {% if customer.orders.size > 0 %}
+    {% for order in customer.orders %}
+      <div style="padding: 1.5rem; background: var(--color-secondary); border-radius: 8px; margin-bottom: 1rem;">
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <a href="{{ order.customer_url }}" style="color: var(--color-primary); font-weight: 700;">{{ order.name }}</a>
+            <p style="color: var(--color-text-muted); font-size: 0.85rem;">{{ order.created_at | date: '%d. %m. %Y' }}</p>
+          </div>
+          <div style="text-align: right;">
+            <p style="font-weight: 700;">{{ order.total_price | money }}</p>
+            <p style="color: var(--color-text-muted); font-size: 0.85rem;">{{ order.fulfillment_status_label }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="color: var(--color-text-muted);">Zatim zadne objednavky.</p>
+  {% endif %}
+
+  <p style="margin-top: 2rem;">
+    <a href="/account/logout" style="color: var(--color-primary);">Odhlasit se</a>
+  </p>
+</div>

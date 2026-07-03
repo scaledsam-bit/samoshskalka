@@ -1,0 +1,70 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="site-logo">{{ shop.name }}</div>
+        <p>{{ section.settings.footer_text }}</p>
+      </div>
+
+      <div class="footer-column">
+        <h4>Navigace</h4>
+        {% for link in linklists[section.settings.footer_menu].links %}
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        {% endfor %}
+      </div>
+
+      <div class="footer-column">
+        <h4>Info</h4>
+        <a href="/pages/about">O nas</a>
+        <a href="/pages/contact">Kontakt</a>
+        <a href="/policies/shipping-policy">Doprava</a>
+        <a href="/policies/refund-policy">Reklamace</a>
+      </div>
+
+      <div class="footer-column">
+        <h4>Kontakt</h4>
+        {% if settings.contact_email != blank %}
+          <a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a>
+        {% endif %}
+        {% if settings.contact_phone != blank %}
+          <a href="tel:{{ settings.contact_phone }}">{{ settings.contact_phone }}</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. Vsechna prava vyhrazena.</p>
+      <div class="social-links">
+        {% if settings.social_instagram != blank %}
+          <a href="{{ settings.social_instagram }}" target="_blank" rel="noopener">Instagram</a>
+        {% endif %}
+        {% if settings.social_facebook != blank %}
+          <a href="{{ settings.social_facebook }}" target="_blank" rel="noopener">Facebook</a>
+        {% endif %}
+        {% if settings.social_tiktok != blank %}
+          <a href="{{ settings.social_tiktok }}" target="_blank" rel="noopener">TikTok</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "footer_text",
+      "label": "Popis v paticce",
+      "default": "Profesionalni polepy na motorky. Udelejte ze sve motorky unikat."
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu",
+      "label": "Menu v paticce",
+      "default": "footer"
+    }
+  ]
+}
+{% endschema %}

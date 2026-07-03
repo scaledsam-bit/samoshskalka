@@ -1,0 +1,61 @@
+{% if section.settings.announcement_text != blank %}
+  <div class="announcement-bar">
+    {{ section.settings.announcement_text }}
+  </div>
+{% endif %}
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="site-logo">
+      {% if section.settings.logo %}
+        <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" height="40">
+      {% else %}
+        {{ shop.name }}
+      {% endif %}
+    </a>
+
+    <button class="menu-toggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="main-nav">
+      {% for link in linklists[section.settings.menu].links %}
+        <a href="{{ link.url }}">{{ link.title }}</a>
+      {% endfor %}
+    </nav>
+
+    <div class="header-actions">
+      <a href="/cart" class="cart-link">
+        Kosik
+        {% if cart.item_count > 0 %}
+          <span class="cart-count">{{ cart.item_count }}</span>
+        {% endif %}
+      </a>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Text oznameni",
+      "default": "Doprava zdarma nad 1500 Kc"
+    }
+  ]
+}
+{% endschema %}

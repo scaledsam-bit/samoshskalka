@@ -1,0 +1,95 @@
+<section class="features">
+  <div class="container">
+    <div class="section-title">
+      <h2>{{ section.settings.heading }}</h2>
+    </div>
+    <div class="features-grid">
+      {% for block in section.blocks %}
+        <div class="feature-card" {{ block.shopify_attributes }}>
+          <div class="feature-icon">{{ block.settings.icon }}</div>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Vyhody",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Nadpis",
+      "default": "Proc nakupovat u nas"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Vyhoda",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Ikona (emoji)",
+          "default": "🏍"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Nazev",
+          "default": "Pro motorky"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Popis",
+          "default": "Polepy navrhovane primo pro vasi znacku a model motorky."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vyhody",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "🏍",
+            "title": "Na miru",
+            "text": "Polepy presne podle modelu vasi motorky."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "💎",
+            "title": "Premium material",
+            "text": "Pouzivame pouze prvotrodni vinylove materialy odolne UV zareni."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "🚚",
+            "title": "Rychle doruceni",
+            "text": "Odeslani do 2 pracovnich dnu. Doprava zdarma nad 1500 Kc."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "🛡",
+            "title": "Zaruka kvality",
+            "text": "Garantujeme odolnost a stalobarevnost po dobu 3-5 let."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

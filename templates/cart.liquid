@@ -1,0 +1,50 @@
+<div class="cart-page container">
+  <h1>Kosik</h1>
+
+  {% if cart.item_count > 0 %}
+    {% form 'cart', cart %}
+      <div class="cart-items">
+        {% for item in cart.items %}
+          <div class="cart-item">
+            <div class="cart-item-image">
+              {% if item.image %}
+                <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title | escape }}">
+              {% endif %}
+            </div>
+            <div>
+              <a href="{{ item.url }}" class="cart-item-title">{{ item.product.title }}</a>
+              {% unless item.variant.title == 'Default Title' %}
+                <p style="color: var(--color-text-muted); font-size: 0.85rem; margin-top: 0.25rem;">{{ item.variant.title }}</p>
+              {% endunless %}
+            </div>
+            <div class="qty-controls" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;">
+              <button type="button" class="qty-minus" onclick="this.closest('.qty-controls').querySelector('input').stepDown(); this.closest('form').submit();">-</button>
+              <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" style="width:50px;text-align:center;background:transparent;border:none;color:var(--color-text);">
+              <button type="button" class="qty-plus" onclick="this.closest('.qty-controls').querySelector('input').stepUp(); this.closest('form').submit();">+</button>
+            </div>
+            <div class="cart-item-price">{{ item.line_price | money }}</div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="cart-summary">
+        <div class="cart-total">
+          <span>Celkem</span>
+          <span class="amount">{{ cart.total_price | money }}</span>
+        </div>
+        <p style="color: var(--color-text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">
+          Dane a doprava se vypocitaji pri dokonceni objednavky.
+        </p>
+        <button type="submit" name="checkout" class="btn btn-add-to-cart">
+          Pokracovat k platbe
+        </button>
+      </div>
+    {% endform %}
+  {% else %}
+    <div class="empty-state">
+      <h2>Vas kosik je prazdny</h2>
+      <p>Zda se, ze jste si jeste nic nevybrali.</p>
+      <a href="/collections/all" class="btn btn-primary">Prozkoumat polepy</a>
+    </div>
+  {% endif %}
+</div>

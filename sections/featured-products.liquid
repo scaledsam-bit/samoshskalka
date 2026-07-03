@@ -1,0 +1,77 @@
+<section class="container" style="padding: 4rem 0;">
+  <div class="section-title">
+    <h2>{{ section.settings.heading }}</h2>
+    <p>{{ section.settings.subheading }}</p>
+  </div>
+
+  <div class="products-grid">
+    {% for product in collections[section.settings.collection].products limit: section.settings.limit %}
+      {% render 'product-card', product: product %}
+    {% else %}
+      {% for i in (1..4) %}
+        <div class="product-card">
+          <div class="product-card-image">
+            {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+          <div class="product-card-info">
+            <h3 class="product-card-title">Ukazkovy polep {{ i }}</h3>
+            <div class="product-card-price">od 990 Kc</div>
+          </div>
+        </div>
+      {% endfor %}
+    {% endfor %}
+  </div>
+
+  {% if section.settings.show_view_all %}
+    <div style="text-align: center; padding-top: 1rem;">
+      <a href="{{ collections[section.settings.collection].url | default: '/collections/all' }}" class="btn btn-outline">
+        Zobrazit vse
+      </a>
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Doporucene produkty",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Nadpis",
+      "default": "Nase polepy"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Podnadpis",
+      "default": "Vybirejte z nasi nabidky profesionalnich polepu na motorky"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Kolekce"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Pocet produktu",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Zobrazit tlacitko Zobrazit vse",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Doporucene produkty"
+    }
+  ]
+}
+{% endschema %}

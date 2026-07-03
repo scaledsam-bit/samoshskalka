@@ -1,0 +1,98 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "MotoStickers",
+    "theme_version": "1.0.0",
+    "theme_author": "SamoshSkalka",
+    "theme_documentation_url": "",
+    "theme_support_url": ""
+  },
+  {
+    "name": "Barvy a typografie",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Hlavni barva",
+        "default": "#FF4500"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Sekundarni barva",
+        "default": "#1a1a2e"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Akcentova barva",
+        "default": "#e94560"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Barva pozadi",
+        "default": "#0f0f1a"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Barva textu",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted",
+        "label": "Tlumena barva textu",
+        "default": "#a0a0b0"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_heading",
+        "label": "Font nadpisu",
+        "default": "bebas_neue_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_body",
+        "label": "Font textu",
+        "default": "inter_n4"
+      }
+    ]
+  },
+  {
+    "name": "Socialni site",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook URL"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok URL"
+      }
+    ]
+  },
+  {
+    "name": "Kontakt",
+    "settings": [
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "Kontaktni email"
+      },
+      {
+        "type": "text",
+        "id": "contact_phone",
+        "label": "Telefon"
+      }
+    ]
+  }
+]

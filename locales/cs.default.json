@@ -1,0 +1,40 @@
+{
+  "general": {
+    "404": {
+      "title": "Stranka nenalezena",
+      "subtext": "Pozadovana stranka neexistuje."
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Pridat do kosiku",
+      "sold_out": "Vyprodano",
+      "quantity": "Pocet",
+      "variant": "Varianta"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Kosik",
+      "empty": "Vas kosik je prazdny",
+      "subtotal": "Mezisouc",
+      "total": "Celkem",
+      "checkout": "Pokracovat k platbe"
+    }
+  },
+  "customer": {
+    "login": {
+      "title": "Prihlaseni",
+      "email": "Email",
+      "password": "Heslo",
+      "submit": "Prihlasit se"
+    },
+    "register": {
+      "title": "Registrace",
+      "submit": "Vytvorit ucet"
+    },
+    "account": {
+      "title": "Muj ucet"
+    }
+  }
+}

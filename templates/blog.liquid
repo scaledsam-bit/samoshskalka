@@ -1,0 +1,11 @@
+<div class="container page-content">
+  <h1>{{ blog.title }}</h1>
+  {% for article in blog.articles %}
+    <article style="margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.06);">
+      <h2><a href="{{ article.url }}" style="color: var(--color-primary);">{{ article.title }}</a></h2>
+      <p style="color: var(--color-text-muted); font-size: 0.85rem; margin: 0.5rem 0 1rem;">{{ article.published_at | date: '%d. %m. %Y' }}</p>
+      <p style="color: var(--color-text-muted);">{{ article.excerpt_or_content | strip_html | truncatewords: 40 }}</p>
+      <a href="{{ article.url }}" class="btn btn-outline" style="margin-top: 1rem; display: inline-flex;">Cist dal</a>
+    </article>
+  {% endfor %}
+</div>

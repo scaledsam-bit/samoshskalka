@@ -1,0 +1,22 @@
+<div class="container page-content">
+  <h1>Objednavka {{ order.name }}</h1>
+  <p style="color: var(--color-text-muted); margin-bottom: 2rem;">Datum: {{ order.created_at | date: '%d. %m. %Y' }}</p>
+
+  <div style="background: var(--color-secondary); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;">
+    {% for line_item in order.line_items %}
+      <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+        <div>
+          <p>{{ line_item.title }}</p>
+          <p style="color: var(--color-text-muted); font-size: 0.85rem;">Pocet: {{ line_item.quantity }}</p>
+        </div>
+        <p style="font-weight: 700;">{{ line_item.line_price | money }}</p>
+      </div>
+    {% endfor %}
+    <div style="display: flex; justify-content: space-between; padding-top: 1rem; font-size: 1.25rem; font-weight: 700;">
+      <span>Celkem</span>
+      <span style="color: var(--color-primary);">{{ order.total_price | money }}</span>
+    </div>
+  </div>
+
+  <a href="/account" style="color: var(--color-primary);">Zpet na ucet</a>
+</div>

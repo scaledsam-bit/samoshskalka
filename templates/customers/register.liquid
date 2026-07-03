@@ -1,0 +1,37 @@
+<div class="container page-content" style="max-width: 480px;">
+  <h1>Registrace</h1>
+
+  {% form 'create_customer' %}
+    {{ form.errors | default_errors }}
+
+    <div style="margin-bottom: 1.25rem;">
+      <label for="first_name" style="display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-muted); margin-bottom: 0.5rem;">Jmeno</label>
+      <input type="text" name="customer[first_name]" id="first_name"
+        style="width: 100%; padding: 0.75rem 1rem; background: var(--color-secondary); color: var(--color-text); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; font-size: 1rem;">
+    </div>
+
+    <div style="margin-bottom: 1.25rem;">
+      <label for="last_name" style="display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-muted); margin-bottom: 0.5rem;">Prijmeni</label>
+      <input type="text" name="customer[last_name]" id="last_name"
+        style="width: 100%; padding: 0.75rem 1rem; background: var(--color-secondary); color: var(--color-text); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; font-size: 1rem;">
+    </div>
+
+    <div style="margin-bottom: 1.25rem;">
+      <label for="email" style="display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-muted); margin-bottom: 0.5rem;">Email</label>
+      <input type="email" name="customer[email]" id="email" required
+        style="width: 100%; padding: 0.75rem 1rem; background: var(--color-secondary); color: var(--color-text); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; font-size: 1rem;">
+    </div>
+
+    <div style="margin-bottom: 1.5rem;">
+      <label for="password" style="display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-muted); margin-bottom: 0.5rem;">Heslo</label>
+      <input type="password" name="customer[password]" id="password" required
+        style="width: 100%; padding: 0.75rem 1rem; background: var(--color-secondary); color: var(--color-text); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; font-size: 1rem;">
+    </div>
+
+    <button type="submit" class="btn btn-add-to-cart">Vytvorit ucet</button>
+
+    <p style="text-align: center; margin-top: 1.5rem; color: var(--color-text-muted); font-size: 0.875rem;">
+      Uz mate ucet? <a href="/account/login" style="color: var(--color-primary);">Prihlaste se</a>
+    </p>
+  {% endform %}
+</div>

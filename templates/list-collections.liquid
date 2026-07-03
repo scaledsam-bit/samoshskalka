@@ -1,0 +1,34 @@
+<div class="container">
+  <div class="collection-header">
+    <h1>Nase kolekce</h1>
+    <p>Vybirejte z nasich kategorii polepu na motorky</p>
+  </div>
+
+  <div class="products-grid">
+    {% for collection in collections %}
+      {% unless collection.handle == 'frontpage' %}
+        <div class="product-card">
+          <a href="{{ collection.url }}">
+            <div class="product-card-image">
+              {% if collection.image %}
+                <img
+                  src="{{ collection.image | image_url: width: 600 }}"
+                  alt="{{ collection.title | escape }}"
+                  loading="lazy"
+                >
+              {% else %}
+                {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              {% endif %}
+            </div>
+            <div class="product-card-info">
+              <h3 class="product-card-title">{{ collection.title }}</h3>
+              <div class="product-card-price" style="color: var(--color-text-muted); font-size: 0.9rem;">
+                {{ collection.products_count }} produktu
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endunless %}
+    {% endfor %}
+  </div>
+</div>
