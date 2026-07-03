@@ -2,7 +2,7 @@
   {% if section.settings.image %}
     <div class="hero-bg" style="background-image: url('{{ section.settings.image | image_url: width: 1920 }}')"></div>
   {% else %}
-    <div class="hero-bg" style="background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-bg) 100%)"></div>
+    <div class="hero-bg" style="background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 40%, #0f0f1a 100%)"></div>
   {% endif %}
 
   <div class="container hero-content">
@@ -11,15 +11,20 @@
     {% endif %}
     <h1>{{ section.settings.heading }}</h1>
     <p>{{ section.settings.subheading }}</p>
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+    <div class="hero-buttons">
       {% if section.settings.button_text != blank %}
-        <a href="{{ section.settings.button_url }}" class="btn btn-primary">{{ section.settings.button_text }}</a>
+        <a href="{{ section.settings.button_url | default: '/collections/all' }}" class="btn btn-primary">
+          {{ section.settings.button_text }}
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
       {% endif %}
       {% if section.settings.button_text_2 != blank %}
         <a href="{{ section.settings.button_url_2 }}" class="btn btn-outline">{{ section.settings.button_text_2 }}</a>
       {% endif %}
     </div>
   </div>
+
+  <div class="hero-scroll">Scroll</div>
 </section>
 
 {% schema %}
@@ -35,7 +40,7 @@
       "type": "text",
       "id": "badge",
       "label": "Stitek",
-      "default": "Novinka 2026"
+      "default": "Kolekce 2026"
     },
     {
       "type": "text",
@@ -47,7 +52,7 @@
       "type": "text",
       "id": "subheading",
       "label": "Podnadpis",
-      "default": "Profesionalni polepy, ktere vas odlisi od ostatnich. Prvotrodni material, presny strich."
+      "default": "Profesionalni vinylove polepy navrzene pro vasi motorku. Premium materialy, presny strich, odolnost az 5 let."
     },
     {
       "type": "text",
@@ -64,7 +69,7 @@
       "type": "text",
       "id": "button_text_2",
       "label": "Text druheho tlacitka",
-      "default": "O nas"
+      "default": "Jak to funguje"
     },
     {
       "type": "url",

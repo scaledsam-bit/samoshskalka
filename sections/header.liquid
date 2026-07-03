@@ -8,9 +8,9 @@
   <div class="container header-inner">
     <a href="/" class="site-logo">
       {% if section.settings.logo %}
-        <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" height="40">
+        <img src="{{ section.settings.logo | image_url: width: 240 }}" alt="{{ shop.name }}" height="44">
       {% else %}
-        {{ shop.name }}
+        <span class="logo-accent">MOTO</span>STICKERS
       {% endif %}
     </a>
 
@@ -25,8 +25,13 @@
     </nav>
 
     <div class="header-actions">
+      <form action="/search" method="get" class="header-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" name="q" placeholder="Hledat polepy..." aria-label="Hledat">
+      </form>
+
       <a href="/cart" class="cart-link">
-        Kosik
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
         {% if cart.item_count > 0 %}
           <span class="cart-count">{{ cart.item_count }}</span>
         {% endif %}
@@ -54,7 +59,7 @@
       "type": "text",
       "id": "announcement_text",
       "label": "Text oznameni",
-      "default": "Doprava zdarma nad 1500 Kc"
+      "default": "Doprava zdarma nad 1 500 Kc | Garance kvality 3-5 let"
     }
   ]
 }

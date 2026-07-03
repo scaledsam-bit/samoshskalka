@@ -1,0 +1,63 @@
+<section class="trust-bar">
+  <div class="container">
+    <div class="trust-bar-inner">
+      {% for block in section.blocks %}
+        <div class="trust-item" {{ block.shopify_attributes }}>
+          {% if block.settings.icon == 'truck' %}
+            <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          {% elsif block.settings.icon == 'shield' %}
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          {% elsif block.settings.icon == 'star' %}
+            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          {% elsif block.settings.icon == 'refresh' %}
+            <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+          {% endif %}
+          {{ block.settings.text }}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trust bar",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Polozka",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Ikona",
+          "options": [
+            { "value": "truck", "label": "Doprava" },
+            { "value": "shield", "label": "Stit" },
+            { "value": "star", "label": "Hvezda" },
+            { "value": "refresh", "label": "Vraceni" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust bar",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "truck", "text": "Doprava zdarma od 1 500 Kc" } },
+        { "type": "item", "settings": { "icon": "shield", "text": "Zaruka 3-5 let" } },
+        { "type": "item", "settings": { "icon": "star", "text": "4.9/5 hodnoceni" } },
+        { "type": "item", "settings": { "icon": "refresh", "text": "30 dni na vraceni" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,11 +1,13 @@
 <section class="features">
   <div class="container">
-    <div class="section-title">
+    <div class="section-title animate-in">
+      <span class="label">{{ section.settings.label }}</span>
       <h2>{{ section.settings.heading }}</h2>
+      <p>{{ section.settings.subheading }}</p>
     </div>
     <div class="features-grid">
       {% for block in section.blocks %}
-        <div class="feature-card" {{ block.shopify_attributes }}>
+        <div class="feature-card animate-in" style="transition-delay: {{ forloop.index | times: 100 }}ms" {{ block.shopify_attributes }}>
           <div class="feature-icon">{{ block.settings.icon }}</div>
           <h3>{{ block.settings.title }}</h3>
           <p>{{ block.settings.text }}</p>
@@ -21,9 +23,21 @@
   "settings": [
     {
       "type": "text",
+      "id": "label",
+      "label": "Stitek",
+      "default": "Proc my"
+    },
+    {
+      "type": "text",
       "id": "heading",
       "label": "Nadpis",
       "default": "Proc nakupovat u nas"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Podnadpis",
+      "default": "Nabizime profesionalni polepy s garanovanou kvalitou a rychlym dorucenim"
     }
   ],
   "blocks": [
@@ -40,14 +54,12 @@
         {
           "type": "text",
           "id": "title",
-          "label": "Nazev",
-          "default": "Pro motorky"
+          "label": "Nazev"
         },
         {
           "type": "text",
           "id": "text",
-          "label": "Popis",
-          "default": "Polepy navrhovane primo pro vasi znacku a model motorky."
+          "label": "Popis"
         }
       ]
     }
@@ -59,17 +71,17 @@
         {
           "type": "feature",
           "settings": {
-            "icon": "🏍",
-            "title": "Na miru",
-            "text": "Polepy presne podle modelu vasi motorky."
+            "icon": "🎯",
+            "title": "Presny strih",
+            "text": "Kazdy polep je presne vyriznut podle modelu vasi motorky. Perfektni padnuti garantovano."
           }
         },
         {
           "type": "feature",
           "settings": {
             "icon": "💎",
-            "title": "Premium material",
-            "text": "Pouzivame pouze prvotrodni vinylove materialy odolne UV zareni."
+            "title": "Premium vinyl",
+            "text": "Pouzivame vyhradne 3M a Avery Dennison vinyl s odolnosti vuci UV zareni a poveternostnim vlivum."
           }
         },
         {
@@ -77,15 +89,15 @@
           "settings": {
             "icon": "🚚",
             "title": "Rychle doruceni",
-            "text": "Odeslani do 2 pracovnich dnu. Doprava zdarma nad 1500 Kc."
+            "text": "Odeslani do 48 hodin. Doprava zdarma u objednavek nad 1 500 Kc po cele CR."
           }
         },
         {
           "type": "feature",
           "settings": {
-            "icon": "🛡",
-            "title": "Zaruka kvality",
-            "text": "Garantujeme odolnost a stalobarevnost po dobu 3-5 let."
+            "icon": "🛡️",
+            "title": "Zaruka 3-5 let",
+            "text": "Garantujeme stalobarevnost a odolnost. Pokud nejste spokojeni, vracime penize."
           }
         }
       ]

@@ -1,21 +1,27 @@
-<section class="container" style="padding: 4rem 0;">
-  <div class="section-title">
+<section class="section container">
+  <div class="section-title animate-in">
+    <span class="label">{{ section.settings.label }}</span>
     <h2>{{ section.settings.heading }}</h2>
     <p>{{ section.settings.subheading }}</p>
   </div>
 
   <div class="products-grid">
     {% for product in collections[section.settings.collection].products limit: section.settings.limit %}
-      {% render 'product-card', product: product %}
+      <div class="animate-in" style="transition-delay: {{ forloop.index | times: 80 }}ms">
+        {% render 'product-card', product: product %}
+      </div>
     {% else %}
-      {% for i in (1..4) %}
-        <div class="product-card">
-          <div class="product-card-image">
-            {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
-          </div>
-          <div class="product-card-info">
-            <h3 class="product-card-title">Ukazkovy polep {{ i }}</h3>
-            <div class="product-card-price">od 990 Kc</div>
+      {% for i in (1..8) %}
+        <div class="animate-in" style="transition-delay: {{ i | times: 80 }}ms">
+          <div class="product-card">
+            <div class="product-card-image">
+              {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+            <div class="product-card-info">
+              <span class="product-card-vendor">MotoStickers</span>
+              <h3 class="product-card-title">Ukazkovy polep {{ i }}</h3>
+              <div class="product-card-price">od 990 Kc</div>
+            </div>
           </div>
         </div>
       {% endfor %}
@@ -23,9 +29,10 @@
   </div>
 
   {% if section.settings.show_view_all %}
-    <div style="text-align: center; padding-top: 1rem;">
+    <div style="text-align: center; padding-top: 2.5rem;">
       <a href="{{ collections[section.settings.collection].url | default: '/collections/all' }}" class="btn btn-outline">
         Zobrazit vse
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
     </div>
   {% endif %}
@@ -37,15 +44,21 @@
   "settings": [
     {
       "type": "text",
+      "id": "label",
+      "label": "Stitek",
+      "default": "Nase nabidka"
+    },
+    {
+      "type": "text",
       "id": "heading",
       "label": "Nadpis",
-      "default": "Nase polepy"
+      "default": "Nejprodavanejsi polepy"
     },
     {
       "type": "text",
       "id": "subheading",
       "label": "Podnadpis",
-      "default": "Vybirejte z nasi nabidky profesionalnich polepu na motorky"
+      "default": "Vybirejte z nasich nejoblibenejsich designu pro vasi motorku"
     },
     {
       "type": "collection",
@@ -57,7 +70,7 @@
       "id": "limit",
       "label": "Pocet produktu",
       "min": 2,
-      "max": 12,
+      "max": 16,
       "step": 1,
       "default": 8
     },

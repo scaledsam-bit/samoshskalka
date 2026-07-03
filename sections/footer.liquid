@@ -2,47 +2,65 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <div class="site-logo">{{ shop.name }}</div>
+        <a href="/" class="site-logo">
+          {% if section.settings.logo %}
+            <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" height="40">
+          {% else %}
+            <span class="logo-accent">MOTO</span>STICKERS
+          {% endif %}
+        </a>
         <p>{{ section.settings.footer_text }}</p>
       </div>
 
       <div class="footer-column">
-        <h4>Navigace</h4>
+        <h4>Obchod</h4>
         {% for link in linklists[section.settings.footer_menu].links %}
           <a href="{{ link.url }}">{{ link.title }}</a>
         {% endfor %}
       </div>
 
       <div class="footer-column">
-        <h4>Info</h4>
+        <h4>Informace</h4>
         <a href="/pages/about">O nas</a>
         <a href="/pages/contact">Kontakt</a>
-        <a href="/policies/shipping-policy">Doprava</a>
-        <a href="/policies/refund-policy">Reklamace</a>
+        <a href="/policies/shipping-policy">Doprava a platba</a>
+        <a href="/policies/refund-policy">Reklamace a vraceni</a>
+        <a href="/policies/privacy-policy">Ochrana soukromi</a>
+        <a href="/policies/terms-of-service">Obchodni podminky</a>
       </div>
 
-      <div class="footer-column">
-        <h4>Kontakt</h4>
-        {% if settings.contact_email != blank %}
-          <a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a>
-        {% endif %}
-        {% if settings.contact_phone != blank %}
-          <a href="tel:{{ settings.contact_phone }}">{{ settings.contact_phone }}</a>
-        {% endif %}
+      <div class="footer-column footer-newsletter">
+        <h4>Newsletter</h4>
+        <p>Prihlaste se a ziskejte 10% slevu na prvni objednavku.</p>
+        {% form 'customer' %}
+          <input type="hidden" name="contact[tags]" value="newsletter,footer">
+          <div class="footer-newsletter-form">
+            <input type="email" name="contact[email]" placeholder="Vas email" required aria-label="Email pro newsletter">
+            <button type="submit" class="btn btn-primary btn-sm">OK</button>
+          </div>
+        {% endform %}
       </div>
     </div>
 
     <div class="footer-bottom">
       <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. Vsechna prava vyhrazena.</p>
+
+      <div class="payment-icons">
+        <span>VISA</span>
+        <span>MC</span>
+        <span>GPay</span>
+        <span>Apple Pay</span>
+      </div>
+
       <div class="social-links">
         {% if settings.social_instagram != blank %}
-          <a href="{{ settings.social_instagram }}" target="_blank" rel="noopener">Instagram</a>
+          <a href="{{ settings.social_instagram }}" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
         {% endif %}
         {% if settings.social_facebook != blank %}
-          <a href="{{ settings.social_facebook }}" target="_blank" rel="noopener">Facebook</a>
+          <a href="{{ settings.social_facebook }}" target="_blank" rel="noopener" aria-label="Facebook">FB</a>
         {% endif %}
         {% if settings.social_tiktok != blank %}
-          <a href="{{ settings.social_tiktok }}" target="_blank" rel="noopener">TikTok</a>
+          <a href="{{ settings.social_tiktok }}" target="_blank" rel="noopener" aria-label="TikTok">TT</a>
         {% endif %}
       </div>
     </div>
@@ -54,10 +72,15 @@
   "name": "Footer",
   "settings": [
     {
-      "type": "text",
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo v paticce"
+    },
+    {
+      "type": "textarea",
       "id": "footer_text",
-      "label": "Popis v paticce",
-      "default": "Profesionalni polepy na motorky. Udelejte ze sve motorky unikat."
+      "label": "Popis",
+      "default": "Profesionalni vinylove polepy na motorky. Premium materialy, presny strih, garance kvality. Udelejte ze sve motorky unikat."
     },
     {
       "type": "link_list",

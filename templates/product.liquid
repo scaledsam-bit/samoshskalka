@@ -1,13 +1,24 @@
 <div class="product-page">
   <div class="container">
+
+    <nav class="product-breadcrumb">
+      <a href="/">Domov</a>
+      <span class="sep">/</span>
+      {% if product.collections.size > 0 %}
+        <a href="{{ product.collections.first.url }}">{{ product.collections.first.title }}</a>
+        <span class="sep">/</span>
+      {% endif %}
+      <span style="color: var(--color-text);">{{ product.title }}</span>
+    </nav>
+
     <div class="product-layout">
 
       <div class="product-gallery">
         <div class="product-main-image">
           {% if product.featured_image %}
             <img
-              src="{{ product.featured_image | image_url: width: 800 }}"
-              alt="{{ product.featured_image.alt | escape }}"
+              src="{{ product.featured_image | image_url: width: 900 }}"
+              alt="{{ product.featured_image.alt | default: product.title | escape }}"
               id="product-main-img"
             >
           {% else %}
@@ -18,11 +29,11 @@
         {% if product.images.size > 1 %}
           <div class="product-thumbnails">
             {% for image in product.images %}
-              <button class="{% if forloop.first %}is-active{% endif %}">
+              <button class="{% if forloop.first %}is-active{% endif %}" aria-label="Zobrazit obrazek {{ forloop.index }}">
                 <img
                   src="{{ image | image_url: width: 150 }}"
-                  alt="{{ image.alt | escape }}"
-                  data-full="{{ image | image_url: width: 800 }}"
+                  alt="{{ image.alt | default: product.title | escape }}"
+                  data-full="{{ image | image_url: width: 900 }}"
                   loading="lazy"
                 >
               </button>
@@ -32,13 +43,18 @@
       </div>
 
       <div class="product-info">
+        {% if product.vendor != blank %}
+          <div class="product-vendor">{{ product.vendor }}</div>
+        {% endif %}
+
         <h1>{{ product.title }}</h1>
-        <div class="product-price">
-          {{ product.price | money }}
+
+        <div class="product-price-wrap">
+          <span class="product-price">{{ product.price | money }}</span>
           {% if product.compare_at_price > product.price %}
-            <span class="compare-price" style="font-size: 1.1rem; color: var(--color-text-muted); text-decoration: line-through; margin-left: 0.75rem;">
-              {{ product.compare_at_price | money }}
-            </span>
+            <span class="product-compare-price">{{ product.compare_at_price | money }}</span>
+            {% assign save_amount = product.compare_at_price | minus: product.price %}
+            <span class="product-save-badge">Usetrite {{ save_amount | money }}</span>
           {% endif %}
         </div>
 
@@ -47,6 +63,25 @@
             {{ product.description }}
           </div>
         {% endif %}
+
+        <div class="product-meta">
+          <div class="product-meta-item">
+            <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Doprava do 48h
+          </div>
+          <div class="product-meta-item">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Zaruka 3-5 let
+          </div>
+          <div class="product-meta-item">
+            <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+            30 dni na vraceni
+          </div>
+          <div class="product-meta-item">
+            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Premium vinyl
+          </div>
+        </div>
 
         {% form 'product', product %}
           {% if product.variants.size > 1 %}
@@ -57,8 +92,9 @@
                   <option
                     value="{{ variant.id }}"
                     {% unless variant.available %}disabled{% endunless %}
+                    {% if variant == product.selected_or_first_available_variant %}selected{% endif %}
                   >
-                    {{ variant.title }} - {{ variant.price | money }}
+                    {{ variant.title }} — {{ variant.price | money }}
                     {% unless variant.available %} (Vyprodano){% endunless %}
                   </option>
                 {% endfor %}
@@ -71,9 +107,9 @@
           <div class="quantity-selector">
             <label>Pocet</label>
             <div class="qty-controls">
-              <button type="button" class="qty-minus">-</button>
-              <input type="number" name="quantity" value="1" min="1">
-              <button type="button" class="qty-plus">+</button>
+              <button type="button" class="qty-minus" aria-label="Snizit pocet">−</button>
+              <input type="number" name="quantity" value="1" min="1" aria-label="Pocet kusu">
+              <button type="button" class="qty-plus" aria-label="Zvysit pocet">+</button>
             </div>
           </div>
 

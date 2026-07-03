@@ -2,12 +2,17 @@
   <a href="{{ product.url }}">
     <div class="product-card-image">
       {% if product.compare_at_price > product.price %}
-        <span class="product-badge">Sleva</span>
+        <span class="product-badge">
+          -{{ product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price }}%
+        </span>
+      {% elsif product.tags contains 'novinka' %}
+        <span class="product-badge product-badge--new">Novinka</span>
       {% endif %}
+
       {% if product.featured_image %}
         <img
           src="{{ product.featured_image | image_url: width: 600 }}"
-          alt="{{ product.featured_image.alt | escape }}"
+          alt="{{ product.featured_image.alt | default: product.title | escape }}"
           loading="lazy"
           width="600"
           height="600"
@@ -15,8 +20,16 @@
       {% else %}
         {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
       {% endif %}
+
+      <div class="product-card-overlay">
+        <span class="btn btn-primary btn-sm">Zobrazit detail</span>
+      </div>
     </div>
+
     <div class="product-card-info">
+      {% if product.vendor != blank %}
+        <span class="product-card-vendor">{{ product.vendor }}</span>
+      {% endif %}
       <h3 class="product-card-title">{{ product.title }}</h3>
       <div class="product-card-price">
         {{ product.price | money }}
