@@ -1,5 +1,4 @@
 import os
-import json
 from instagrapi import Client
 
 SESSION_FILE = os.path.join(os.path.dirname(__file__), "data", "ig_session.json")
@@ -35,11 +34,13 @@ def fetch_following(cl: Client, user_id: str) -> set[str]:
     return {u.username for u in users.values()}
 
 
-def get_my_user_id(cl: Client) -> str:
-    return str(cl.user_id)
+def get_user_id_by_username(cl: Client, username: str) -> str:
+    user = cl.user_info_by_username(username)
+    return str(user.pk)
 
 
 def login() -> tuple[Client, str]:
     cl = _get_client()
-    user_id = get_my_user_id(cl)
-    return cl, user_id
+    target = os.environ.get("TARGET_USERNAME", "jana_pirkova_")
+    target_id = get_user_id_by_username(cl, target)
+    return cl, target, target_id

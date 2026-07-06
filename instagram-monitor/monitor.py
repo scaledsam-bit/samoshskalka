@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Instagram Follow Monitor
-Sleduje změny v followers/following vašeho vlastního účtu
+Instagram Follow Monitor pro @jana_pirkova_
+Sleduje změny v followers/following cílového účtu
 a posílá oznámení o změnách.
 
 Použití:
@@ -31,15 +31,15 @@ def compare(old_set: set[str], new_set: set[str]) -> tuple[set[str], set[str]]:
 
 def check_once():
     print(f"[{datetime.now().strftime('%H:%M:%S')}] Přihlašování k Instagramu...")
-    cl, user_id = login()
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Přihlášen jako @{os.environ['IG_USERNAME']}")
+    cl, target_username, target_id = login()
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Sleduji účet: @{target_username}")
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Stahuji followers...")
-    current_followers = fetch_followers(cl, user_id)
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Stahuji following...")
-    current_following = fetch_following(cl, user_id)
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Stahuji followers @{target_username}...")
+    current_followers = fetch_followers(cl, target_id)
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Stahuji following @{target_username}...")
+    current_following = fetch_following(cl, target_id)
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Followers: {len(current_followers)}, Following: {len(current_following)}")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] @{target_username} — Followers: {len(current_followers)}, Following: {len(current_following)}")
 
     previous = load_snapshot()
     events = []
@@ -63,7 +63,7 @@ def check_once():
             events.append({"timestamp": now, "type": "lost_following", "username": u})
 
         if events:
-            notify(events)
+            notify(events, target_username)
             save_history(events)
         else:
             print(f"[{datetime.now().strftime('%H:%M:%S')}] Žádné změny.")
@@ -79,15 +79,17 @@ def show_history():
         return
 
     import json
+    target = os.environ.get("TARGET_USERNAME", "jana_pirkova_")
+    print(f"Historie změn pro @{target}:\n")
     with open(history_path, encoding="utf-8") as f:
         for line in f:
             event = json.loads(line)
             ts = event["timestamp"][:16].replace("T", " ")
             label = {
-                "new_follower": "✅ Nový sledující",
-                "lost_follower": "❌ Přestal sledovat",
-                "new_following": "➡️  Začal(a) jsi sledovat",
-                "lost_following": "⬅️  Přestal(a) jsi sledovat",
+                "new_follower": "Nový sledující",
+                "lost_follower": "Přestal ji sledovat",
+                "new_following": "Začala sledovat",
+                "lost_following": "Přestala sledovat",
             }.get(event["type"], event["type"])
             print(f"  {ts}  {label}: @{event['username']}")
 
@@ -111,7 +113,8 @@ def main():
 
     if args.loop:
         interval = int(os.environ.get("CHECK_INTERVAL", "30"))
-        print(f"Spouštím monitor v cyklu (interval: {interval} min)")
+        target = os.environ.get("TARGET_USERNAME", "jana_pirkova_")
+        print(f"Spouštím monitor pro @{target} (interval: {interval} min)")
         print("Ctrl+C pro ukončení\n")
         while True:
             try:

@@ -12,29 +12,29 @@ def _telegram_send(message: str):
     requests.post(url, json={"chat_id": chat_id, "text": message, "parse_mode": "HTML"}, timeout=10)
 
 
-def notify(events: list[dict]):
+def notify(events: list[dict], target_username: str):
     if not events:
         return
 
-    lines = [f"Instagram Monitor — {datetime.now().strftime('%d.%m.%Y %H:%M')}"]
+    lines = [f"Instagram Monitor @{target_username} — {datetime.now().strftime('%d.%m.%Y %H:%M')}"]
     lines.append("")
 
     for e in events:
         icon = {
-            "new_follower": "+👤",
-            "lost_follower": "-👤",
-            "new_following": "+👁",
-            "lost_following": "-👁",
-        }.get(e["type"], "•")
+            "new_follower": "+sledující",
+            "lost_follower": "-sledující",
+            "new_following": "+sleduje",
+            "lost_following": "-sleduje",
+        }.get(e["type"], "")
 
         label = {
-            "new_follower": "Nový sledující",
-            "lost_follower": "Přestal sledovat",
-            "new_following": "Začal(a) jsi sledovat",
-            "lost_following": "Přestal(a) jsi sledovat",
+            "new_follower": f"Nový sledující @{target_username}",
+            "lost_follower": f"Přestal sledovat @{target_username}",
+            "new_following": f"@{target_username} začala sledovat",
+            "lost_following": f"@{target_username} přestala sledovat",
         }.get(e["type"], e["type"])
 
-        lines.append(f"  {icon} {label}: @{e['username']}")
+        lines.append(f"  {icon}  {label}: @{e['username']}")
 
     message = "\n".join(lines)
 
