@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Instagram Monitor pro @jana_pirkova_
-Sleduje kdo ji začal/přestal sledovat a koho ona začala/přestala sledovat.
+Instagram Monitor pro vice uctu.
+Sleduje zmeny ve followers/following cilovych uctu.
 
-Spuštění:
+Spusteni:
     pip install instagrapi
     python monitor.py
 """
@@ -15,11 +15,10 @@ import getpass
 from datetime import datetime
 from instagrapi import Client
 
-TARGET = "jana_pirkova_"
+TARGETS = ["jana_pirkova_", "pirkovis"]
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 CREDS_FILE = os.path.join(DATA_DIR, "credentials.json")
 SESSION_FILE = os.path.join(DATA_DIR, "session.json")
-SNAPSHOT_FILE = os.path.join(DATA_DIR, "snapshot.json")
 HISTORY_FILE = os.path.join(DATA_DIR, "history.txt")
 CHECK_INTERVAL = 30
 
@@ -66,17 +65,22 @@ def fetch_users(cl, user_id, fetch_fn):
     return {u.username for u in users.values()}
 
 
-def load_snapshot():
-    if not os.path.exists(SNAPSHOT_FILE):
+def snapshot_file(target):
+    return os.path.join(DATA_DIR, f"snapshot_{target}.json")
+
+
+def load_snapshot(target):
+    path = snapshot_file(target)
+    if not os.path.exists(path):
         return None
-    with open(SNAPSHOT_FILE, encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         data = json.load(f)
     return set(data["followers"]), set(data["following"])
 
 
-def save_snapshot(followers, following):
+def save_snapshot(target, followers, following):
     ensure_dir()
-    with open(SNAPSHOT_FILE, "w", encoding="utf-8") as f:
+    with open(snapshot_file(target), "w", encoding="utf-8") as f:
         json.dump({
             "timestamp": datetime.now().isoformat(),
             "followers": sorted(followers),
@@ -94,27 +98,26 @@ def ts():
     return datetime.now().strftime("%H:%M:%S")
 
 
-def check():
-    print(f"[{ts()}] Prihlasuji se...")
-    cl = ig_login()
+def check_target(cl, target):
+    print(f"\n[{ts()}] --- @{target} ---")
 
-    print(f"[{ts()}] Hledam @{TARGET}...")
-    target_info = cl.user_info_by_username(TARGET)
+    print(f"[{ts()}] Hledam @{target}...")
+    target_info = cl.user_info_by_username(target)
     target_id = str(target_info.pk)
 
-    print(f"[{ts()}] Stahuji followers @{TARGET}...")
+    print(f"[{ts()}] Stahuji followers @{target}...")
     followers = fetch_users(cl, target_id, cl.user_followers)
 
-    print(f"[{ts()}] Stahuji following @{TARGET}...")
+    print(f"[{ts()}] Stahuji following @{target}...")
     following = fetch_users(cl, target_id, cl.user_following)
 
-    print(f"[{ts()}] @{TARGET} ma {len(followers)} sledujicich, sleduje {len(following)} lidi")
+    print(f"[{ts()}] @{target} ma {len(followers)} sledujicich, sleduje {len(following)} lidi")
 
-    previous = load_snapshot()
+    previous = load_snapshot(target)
 
     if previous is None:
-        print(f"[{ts()}] Prvni kontrola — ukladam snapshot. Zmeny uvidis priste.")
-        save_snapshot(followers, following)
+        print(f"[{ts()}] Prvni kontrola @{target} — ukladam snapshot. Zmeny uvidis priste.")
+        save_snapshot(target, followers, following)
         return
 
     old_followers, old_following = previous
@@ -127,25 +130,25 @@ def check():
     lost_following = old_following - following
 
     for u in sorted(new_followers):
-        msg = f"[{now}]  +sledujici   @{u} zacal sledovat @{TARGET}"
+        msg = f"[{now}]  +sledujici   @{u} zacal sledovat @{target}"
         print(f"  >>> {msg}")
         log_event(msg)
         changes = True
 
     for u in sorted(lost_followers):
-        msg = f"[{now}]  -sledujici   @{u} prestal sledovat @{TARGET}"
+        msg = f"[{now}]  -sledujici   @{u} prestal sledovat @{target}"
         print(f"  >>> {msg}")
         log_event(msg)
         changes = True
 
     for u in sorted(new_following):
-        msg = f"[{now}]  +sleduje     @{TARGET} zacala sledovat @{u}"
+        msg = f"[{now}]  +sleduje     @{target} zacal/a sledovat @{u}"
         print(f"  >>> {msg}")
         log_event(msg)
         changes = True
 
     for u in sorted(lost_following):
-        msg = f"[{now}]  -sleduje     @{TARGET} prestala sledovat @{u}"
+        msg = f"[{now}]  -sleduje     @{target} prestal/a sledovat @{u}"
         print(f"  >>> {msg}")
         log_event(msg)
         changes = True
@@ -153,12 +156,24 @@ def check():
     if not changes:
         print(f"[{ts()}] Zadne zmeny.")
 
-    save_snapshot(followers, following)
+    save_snapshot(target, followers, following)
+
+
+def check():
+    print(f"[{ts()}] Prihlasuji se...")
+    cl = ig_login()
+
+    for target in TARGETS:
+        try:
+            check_target(cl, target)
+        except Exception as e:
+            print(f"[{ts()}] CHYBA u @{target}: {e}")
 
 
 def main():
     print(f"{'=' * 50}")
-    print(f"  Instagram Monitor — @{TARGET}")
+    print(f"  Instagram Monitor")
+    print(f"  Sleduji: {', '.join('@' + t for t in TARGETS)}")
     print(f"  Kontrola kazdych {CHECK_INTERVAL} minut")
     print(f"  Ctrl+C pro ukonceni")
     print(f"{'=' * 50}")
@@ -173,7 +188,7 @@ def main():
         except Exception as e:
             print(f"[{ts()}] CHYBA: {e}")
 
-        print(f"[{ts()}] Dalsi kontrola za {CHECK_INTERVAL} min...\n")
+        print(f"\n[{ts()}] Dalsi kontrola za {CHECK_INTERVAL} min...\n")
         try:
             time.sleep(CHECK_INTERVAL * 60)
         except KeyboardInterrupt:
