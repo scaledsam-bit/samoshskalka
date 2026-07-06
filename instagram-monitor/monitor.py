@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Instagram Monitor pro vice uctu.
-Sleduje zmeny ve followers/following cilovych uctu.
+Sleduje zmeny ve followers/following cilovych uctu
++ kontroluje Close Friends stories.
 
 Spusteni:
     pip install instagrapi
@@ -16,10 +17,12 @@ from datetime import datetime
 from instagrapi import Client
 
 TARGETS = ["jana_pirkova_", "pirkovis"]
+CLOSE_FRIENDS_WATCH = ["jana_pirkova_"]
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 CREDS_FILE = os.path.join(DATA_DIR, "credentials.json")
 SESSION_FILE = os.path.join(DATA_DIR, "session.json")
 HISTORY_FILE = os.path.join(DATA_DIR, "history.txt")
+CF_STATUS_FILE = os.path.join(DATA_DIR, "close_friends_status.json")
 CHECK_INTERVAL = 30
 
 
@@ -88,6 +91,19 @@ def save_snapshot(target, followers, following):
         }, f, ensure_ascii=False, indent=2)
 
 
+def load_cf_status():
+    if not os.path.exists(CF_STATUS_FILE):
+        return {}
+    with open(CF_STATUS_FILE, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def save_cf_status(status):
+    ensure_dir()
+    with open(CF_STATUS_FILE, "w", encoding="utf-8") as f:
+        json.dump(status, f, ensure_ascii=False, indent=2)
+
+
 def log_event(text):
     ensure_dir()
     with open(HISTORY_FILE, "a", encoding="utf-8") as f:
@@ -98,12 +114,48 @@ def ts():
     return datetime.now().strftime("%H:%M:%S")
 
 
-def check_target(cl, target):
-    print(f"\n[{ts()}] --- @{target} ---")
+def check_close_friends(cl, target, target_id):
+    print(f"[{ts()}] Kontroluji Close Friends stories @{target}...")
 
-    print(f"[{ts()}] Hledam @{target}...")
-    target_info = cl.user_info_by_username(target)
-    target_id = str(target_info.pk)
+    try:
+        stories = cl.user_stories(target_id)
+    except Exception as e:
+        print(f"[{ts()}] Nepodarilo se stahnout stories: {e}")
+        return
+
+    cf_stories = [s for s in stories if getattr(s, "is_close_friends", False)]
+    has_cf = len(cf_stories) > 0
+    total_stories = len(stories)
+
+    cf_status = load_cf_status()
+    old_status = cf_status.get(target)
+    now = datetime.now().strftime("%d.%m.%Y %H:%M")
+
+    if total_stories == 0:
+        print(f"[{ts()}] @{target} nema zadne aktivni stories.")
+    elif has_cf:
+        print(f"[{ts()}] VIDIS Close Friends story @{target}! Jsi ve vyberech.")
+        if old_status == "not_in_cf":
+            msg = f"[{now}]  !!!  @{target} te PRIDALA zpet do Close Friends!"
+            print(f"  >>> {msg}")
+            log_event(msg)
+        cf_status[target] = "in_cf"
+    else:
+        print(f"[{ts()}] @{target} ma {total_stories} stories, ale zadne Close Friends.")
+        if old_status == "in_cf":
+            msg = f"[{now}]  !!!  @{target} te mozna ODSTRANILA z Close Friends! (ma stories ale zadne CF)"
+            print(f"  >>> {msg}")
+            log_event(msg)
+        if old_status is None:
+            cf_status[target] = "unknown"
+        else:
+            cf_status[target] = "not_in_cf"
+
+    save_cf_status(cf_status)
+
+
+def check_target(cl, target, target_id):
+    print(f"\n[{ts()}] --- @{target} ---")
 
     print(f"[{ts()}] Stahuji followers @{target}...")
     followers = fetch_users(cl, target_id, cl.user_followers)
@@ -163,17 +215,36 @@ def check():
     print(f"[{ts()}] Prihlasuji se...")
     cl = ig_login()
 
+    target_ids = {}
     for target in TARGETS:
         try:
-            check_target(cl, target)
+            info = cl.user_info_by_username(target)
+            target_ids[target] = str(info.pk)
+        except Exception as e:
+            print(f"[{ts()}] CHYBA pri hledani @{target}: {e}")
+
+    for target in TARGETS:
+        if target not in target_ids:
+            continue
+        try:
+            check_target(cl, target, target_ids[target])
         except Exception as e:
             print(f"[{ts()}] CHYBA u @{target}: {e}")
+
+    for target in CLOSE_FRIENDS_WATCH:
+        if target not in target_ids:
+            continue
+        try:
+            check_close_friends(cl, target, target_ids[target])
+        except Exception as e:
+            print(f"[{ts()}] CHYBA CF kontrola @{target}: {e}")
 
 
 def main():
     print(f"{'=' * 50}")
     print(f"  Instagram Monitor")
     print(f"  Sleduji: {', '.join('@' + t for t in TARGETS)}")
+    print(f"  Close Friends: {', '.join('@' + t for t in CLOSE_FRIENDS_WATCH)}")
     print(f"  Kontrola kazdych {CHECK_INTERVAL} minut")
     print(f"  Ctrl+C pro ukonceni")
     print(f"{'=' * 50}")
