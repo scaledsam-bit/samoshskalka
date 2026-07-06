@@ -8,6 +8,8 @@ Spusteni:
     pip install instagrapi
     python monitor.py                # normalni monitoring
     python monitor.py --stats        # analyza kdo nejvic komentuje/je oznacovany
+    python monitor.py --summary      # celkovy souhrn pres vsechny ucty
+    python monitor.py --highlights   # vypis vsech stories z highlightu
 """
 
 import json
@@ -21,6 +23,55 @@ from datetime import datetime
 from instagrapi import Client
 
 TARGETS = ["jana_pirkova_", "pirkovis"]
+
+MALE_NAMES = {
+    "adam", "ales", "alexandr", "alfred", "andrej", "antonin", "boris",
+    "dalibor", "dan", "daniel", "david", "denis", "dominik", "dušan",
+    "erik", "filip", "frantisek", "honza", "hynek", "ivan", "ivo",
+    "jakub", "jan", "jarda", "jarek", "jaromir", "jaroslav", "jiri",
+    "jindrich", "josef", "karel", "kuba", "ladislav", "leos", "libor",
+    "lubomir", "lubos", "ludek", "ludvik", "lukas", "marek", "marian",
+    "mario", "martin", "matej", "matous", "matyáš", "max", "michal",
+    "milan", "milos", "miroslav", "mojmir", "nikolas", "oldrich", "ondra",
+    "ondrej", "otakar", "patrik", "pavel", "pepa", "petr", "premysl",
+    "radek", "radim", "radovan", "richard", "robert", "robin", "roman",
+    "rostislav", "samuel", "simon", "stanislav", "stepan", "tadeáš",
+    "tomas", "vaclav", "viktor", "vilém", "vit", "vitek", "vladimir",
+    "vladan", "vojtech", "zdenek", "alex", "tobias", "krystof",
+    "sebastian", "nicolas", "noel", "oliver", "oskar", "theodor",
+}
+
+_gender_cache = {}
+
+
+def is_male_user(cl, username):
+    if username in _gender_cache:
+        return _gender_cache[username]
+
+    try:
+        user_info = cl.user_info_by_username(username)
+        full_name = (user_info.full_name or "").lower().strip()
+        first_name = full_name.split()[0] if full_name else ""
+
+        # remove diacritics for matching
+        import unicodedata
+        first_clean = "".join(
+            c for c in unicodedata.normalize("NFD", first_name)
+            if unicodedata.category(c) != "Mn"
+        )
+
+        is_male = first_clean in MALE_NAMES
+        _gender_cache[username] = is_male
+        return is_male
+    except Exception:
+        _gender_cache[username] = False
+        return False
+
+
+def guy_tag(cl, username):
+    if is_male_user(cl, username):
+        return " !!! KLUK !!!"
+    return ""
 CLOSE_FRIENDS_WATCH = ["jana_pirkova_", "pirkovis"]
 STORIES_WATCH = ["jana_pirkova_", "pirkovis"]
 COMMENTS_WATCH = ["jana_pirkova_", "pirkovis"]
@@ -228,7 +279,7 @@ def ts():
     return datetime.now().strftime("%H:%M:%S")
 
 
-def format_story_detail(s, target):
+def format_story_detail(s, target, cl=None):
     media_type = "video" if s.media_type == 2 else "foto"
     is_cf = getattr(s, "is_close_friends", False)
     cf_tag = " [CLOSE FRIENDS]" if is_cf else ""
@@ -238,7 +289,8 @@ def format_story_detail(s, target):
 
     if hasattr(s, "mentions") and s.mentions:
         for m in s.mentions:
-            details.append(f"oznacen/a: @{m.user.username}")
+            tag = guy_tag(cl, m.user.username) if cl else ""
+            details.append(f"oznacen/a: @{m.user.username}{tag}")
 
     if hasattr(s, "story_feed_media") and s.story_feed_media:
         details.append("sdileny prispevek")
@@ -304,13 +356,13 @@ def check_stories(cl, target, target_id):
     if cf_stories:
         print(f"[{ts()}] @{target} ma {len(cf_stories)} CLOSE FRIENDS stories:")
         for s in cf_stories:
-            detail, _ = format_story_detail(s, target)
+            detail, _ = format_story_detail(s, target, cl)
             print(f"  [CF] {detail}")
 
     if new_stories:
         print(f"[{ts()}] @{target} ma {len(new_stories)} novych stories!")
         for s in new_stories:
-            detail, is_cf = format_story_detail(s, target)
+            detail, is_cf = format_story_detail(s, target, cl)
             msg = f"[{now}]  STORY    {detail}"
             print(f"  >>> {msg}")
             log_event(msg)
@@ -395,7 +447,8 @@ def check_comments(cl, target, target_id):
         for c in new_comments:
             text = c.text[:80] if c.text else ""
             author = c.user.username if c.user else "?"
-            msg = f"[{now}]  KOMENT   @{author} komentoval/a prispevek @{target}: \"{text}\""
+            tag = guy_tag(cl, author) if author != "?" else ""
+            msg = f"[{now}]  KOMENT   @{author} komentoval/a prispevek @{target}: \"{text}\"{tag}"
             print(f"  >>> {msg}")
             log_event(msg)
             total_new += 1
@@ -440,25 +493,29 @@ def check_target(cl, target, target_id):
     lost_following = old_following - following
 
     for u in sorted(new_followers):
-        msg = f"[{now}]  +sledujici   @{u} zacal sledovat @{target}"
+        tag = guy_tag(cl, u)
+        msg = f"[{now}]  +sledujici   @{u} zacal sledovat @{target}{tag}"
         print(f"  >>> {msg}")
         log_event(msg)
         changes = True
 
     for u in sorted(lost_followers):
-        msg = f"[{now}]  -sledujici   @{u} prestal sledovat @{target}"
+        tag = guy_tag(cl, u)
+        msg = f"[{now}]  -sledujici   @{u} prestal sledovat @{target}{tag}"
         print(f"  >>> {msg}")
         log_event(msg)
         changes = True
 
     for u in sorted(new_following):
-        msg = f"[{now}]  +sleduje     @{target} zacal/a sledovat @{u}"
+        tag = guy_tag(cl, u)
+        msg = f"[{now}]  +sleduje     @{target} zacal/a sledovat @{u}{tag}"
         print(f"  >>> {msg}")
         log_event(msg)
         changes = True
 
     for u in sorted(lost_following):
-        msg = f"[{now}]  -sleduje     @{target} prestal/a sledovat @{u}"
+        tag = guy_tag(cl, u)
+        msg = f"[{now}]  -sleduje     @{target} prestal/a sledovat @{u}{tag}"
         print(f"  >>> {msg}")
         log_event(msg)
         changes = True
@@ -559,28 +616,32 @@ def run_stats(cl, targets):
         print(f"\n  --- Nejvice oznacovani v postech (tagy na fotkach) ---")
         if tag_counter:
             for user, count in tag_counter.most_common(15):
-                print(f"    {count:>4}x  @{user}")
+                tag = guy_tag(cl, user)
+                print(f"    {count:>4}x  @{user}{tag}")
         else:
             print(f"    Zadne tagy.")
 
         print(f"\n  --- Nejvice zminovani v popisech (@zminky) ---")
         if mention_counter:
             for user, count in mention_counter.most_common(15):
-                print(f"    {count:>4}x  @{user}")
+                tag = guy_tag(cl, user)
+                print(f"    {count:>4}x  @{user}{tag}")
         else:
             print(f"    Zadne zminky.")
 
         print(f"\n  --- Nejvice komentujici ---")
         if comment_counter:
             for user, count in comment_counter.most_common(15):
-                print(f"    {count:>4}x  @{user}")
+                tag = guy_tag(cl, user)
+                print(f"    {count:>4}x  @{user}{tag}")
         else:
             print(f"    Zadne komentare.")
 
         print(f"\n  --- Nejvice oznacovani ve vyberech (highlights) ---")
         if highlight_mention_counter:
             for user, count in highlight_mention_counter.most_common(15):
-                print(f"    {count:>4}x  @{user}")
+                tag = guy_tag(cl, user)
+                print(f"    {count:>4}x  @{user}{tag}")
         else:
             print(f"    Zadne oznaceni ve vyberech.")
 
@@ -632,11 +693,141 @@ def run_highlights(cl, targets):
             print(f"    {len(items)} stories:\n")
 
             for item in items:
-                media_type, taken, details, _ = parse_raw_story(item)
-                detail_str = f"\n             {', '.join(details)}" if details else ""
+                media_type, taken, details, mentions = parse_raw_story(item)
+                tagged_details = []
+                for d in details:
+                    if d.startswith("oznacen/a: @"):
+                        uname = d.split("@", 1)[1]
+                        tag = guy_tag(cl, uname)
+                        tagged_details.append(f"{d}{tag}")
+                    else:
+                        tagged_details.append(d)
+                detail_str = f"\n             {', '.join(tagged_details)}" if tagged_details else ""
                 print(f"    [{taken}] {media_type}{detail_str}")
 
             print()
+
+
+def run_summary(cl, targets):
+    print(f"\n{'=' * 60}")
+    print(f"  SOUHRNNE STATISTIKY — {', '.join('@' + t for t in targets)}")
+    print(f"{'=' * 60}")
+
+    total_tag = Counter()
+    total_mention = Counter()
+    total_comment = Counter()
+    total_highlight_mention = Counter()
+    total_posts = 0
+    total_hl_stories = 0
+
+    for target in targets:
+        print(f"\n  Zpracovavam @{target}...")
+
+        try:
+            info = cl.user_info_by_username(target)
+            target_id = str(info.pk)
+        except Exception as e:
+            print(f"  CHYBA: {e}")
+            continue
+
+        try:
+            medias = cl.user_medias(int(target_id), amount=0)
+        except Exception:
+            medias = []
+
+        total_posts += len(medias)
+
+        for i, media in enumerate(medias):
+            if hasattr(media, "usertags") and media.usertags:
+                for tag in media.usertags:
+                    if hasattr(tag, "user") and tag.user:
+                        total_tag[tag.user.username] += 1
+
+            if media.caption_text:
+                for m in re.findall(r"@(\w+)", media.caption_text):
+                    total_mention[m] += 1
+
+            try:
+                comments = cl.media_comments(media.pk, amount=0)
+                for c in comments:
+                    if c.user:
+                        total_comment[c.user.username] += 1
+            except Exception:
+                pass
+
+            if (i + 1) % 10 == 0:
+                print(f"    ... {i + 1}/{len(medias)} prispevku @{target}")
+
+        try:
+            stories = cl.user_stories(target_id)
+            for s in stories:
+                if hasattr(s, "mentions") and s.mentions:
+                    for m in s.mentions:
+                        total_mention[m.user.username] += 1
+        except Exception:
+            pass
+
+        try:
+            highlights = cl.user_highlights(int(target_id))
+            for hl in highlights:
+                try:
+                    items = fetch_highlight_items_raw(cl, hl.pk)
+                    total_hl_stories += len(items)
+                    for item in items:
+                        _, _, _, item_mentions = parse_raw_story(item)
+                        for username in item_mentions:
+                            total_highlight_mention[username] += 1
+                            total_mention[username] += 1
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+    print(f"\n{'=' * 60}")
+    print(f"  CELKOVE VYSLEDKY ({', '.join('@' + t for t in targets)})")
+    print(f"  {total_posts} prispevku, {total_hl_stories} stories ve vyberech")
+    print(f"{'=' * 60}")
+
+    print(f"\n  --- Nejvice oznacovani v postech (tagy na fotkach) ---")
+    if total_tag:
+        for user, count in total_tag.most_common(15):
+            tag = guy_tag(cl, user)
+            print(f"    {count:>4}x  @{user}{tag}")
+    else:
+        print(f"    Zadne tagy.")
+
+    print(f"\n  --- Nejvice zminovani celkem (@zminky + highlights) ---")
+    if total_mention:
+        for user, count in total_mention.most_common(15):
+            tag = guy_tag(cl, user)
+            print(f"    {count:>4}x  @{user}{tag}")
+    else:
+        print(f"    Zadne zminky.")
+
+    print(f"\n  --- Nejvice komentujici ---")
+    if total_comment:
+        for user, count in total_comment.most_common(15):
+            tag = guy_tag(cl, user)
+            print(f"    {count:>4}x  @{user}{tag}")
+    else:
+        print(f"    Zadne komentare.")
+
+    print(f"\n  --- Nejvice oznacovani ve vyberech (highlights) ---")
+    if total_highlight_mention:
+        for user, count in total_highlight_mention.most_common(15):
+            tag = guy_tag(cl, user)
+            print(f"    {count:>4}x  @{user}{tag}")
+    else:
+        print(f"    Zadne oznaceni ve vyberech.")
+
+    combined = total_tag + total_mention + total_comment + total_highlight_mention
+    print(f"\n  --- TOP 15 celkove (tagy + zminky + komentare + highlights) ---")
+    if combined:
+        for user, count in combined.most_common(15):
+            tag = guy_tag(cl, user)
+            print(f"    {count:>4}x  @{user}{tag}")
+
+    print()
 
 
 def check():
@@ -685,9 +876,18 @@ def main():
                         help="Analyza: kdo nejvic komentuje a je oznacovany")
     parser.add_argument("--highlights", action="store_true",
                         help="Vypis vsech stories ze vsech vyberu (highlights)")
+    parser.add_argument("--summary", action="store_true",
+                        help="Celkovy souhrn pres vsechny ucty dohromady")
     parser.add_argument("--stats-target", nargs="*",
                         help="Ucty pro analyzu (vychozi: jana_pirkova_ pirkovis)")
     args = parser.parse_args()
+
+    if args.summary:
+        print("Prihlasuji se...")
+        cl = ig_login()
+        targets = args.stats_target if args.stats_target else ["jana_pirkova_", "pirkovis"]
+        run_summary(cl, targets)
+        return
 
     if args.highlights:
         print("Prihlasuji se...")
