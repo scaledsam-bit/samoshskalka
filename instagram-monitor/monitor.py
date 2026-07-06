@@ -1,130 +1,184 @@
 #!/usr/bin/env python3
 """
-Instagram Follow Monitor pro @jana_pirkova_
-Sleduje změny v followers/following cílového účtu
-a posílá oznámení o změnách.
+Instagram Monitor pro @jana_pirkova_
+Sleduje kdo ji začal/přestal sledovat a koho ona začala/přestala sledovat.
 
-Použití:
-    python monitor.py              # jednorázová kontrola
-    python monitor.py --loop       # běží v cyklu (výchozí interval 30 min)
-    python monitor.py --history    # zobrazí historii změn
+Spuštění:
+    pip install instagrapi
+    python monitor.py
 """
 
-import argparse
-import time
-import sys
+import json
 import os
+import time
+import getpass
 from datetime import datetime
+from instagrapi import Client
 
-from dotenv import load_dotenv
-
-from instagram_client import login, fetch_followers, fetch_following
-from storage import save_snapshot, load_snapshot, save_history
-from notifier import notify
-
-
-def compare(old_set: set[str], new_set: set[str]) -> tuple[set[str], set[str]]:
-    added = new_set - old_set
-    removed = old_set - new_set
-    return added, removed
+TARGET = "jana_pirkova_"
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+CREDS_FILE = os.path.join(DATA_DIR, "credentials.json")
+SESSION_FILE = os.path.join(DATA_DIR, "session.json")
+SNAPSHOT_FILE = os.path.join(DATA_DIR, "snapshot.json")
+HISTORY_FILE = os.path.join(DATA_DIR, "history.txt")
+CHECK_INTERVAL = 30
 
 
-def check_once():
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Přihlašování k Instagramu...")
-    cl, target_username, target_id = login()
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Sleduji účet: @{target_username}")
+def ensure_dir():
+    os.makedirs(DATA_DIR, exist_ok=True)
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Stahuji followers @{target_username}...")
-    current_followers = fetch_followers(cl, target_id)
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Stahuji following @{target_username}...")
-    current_following = fetch_following(cl, target_id)
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] @{target_username} — Followers: {len(current_followers)}, Following: {len(current_following)}")
+def get_credentials():
+    ensure_dir()
+    if os.path.exists(CREDS_FILE):
+        with open(CREDS_FILE, encoding="utf-8") as f:
+            return json.load(f)
+
+    print("=== Prvni spusteni ===")
+    print("Potrebuji tvuj Instagram login (pro pristup k API).")
+    print()
+    username = input("Instagram username: ").strip()
+    password = getpass.getpass("Instagram heslo: ").strip()
+
+    creds = {"username": username, "password": password}
+    with open(CREDS_FILE, "w", encoding="utf-8") as f:
+        json.dump(creds, f)
+    os.chmod(CREDS_FILE, 0o600)
+    print("Ulozeno.\n")
+    return creds
+
+
+def ig_login():
+    creds = get_credentials()
+    cl = Client()
+
+    if os.path.exists(SESSION_FILE):
+        cl.load_settings(SESSION_FILE)
+
+    cl.login(creds["username"], creds["password"])
+    ensure_dir()
+    cl.dump_settings(SESSION_FILE)
+    return cl
+
+
+def fetch_users(cl, user_id, fetch_fn):
+    users = fetch_fn(user_id, amount=0)
+    return {u.username for u in users.values()}
+
+
+def load_snapshot():
+    if not os.path.exists(SNAPSHOT_FILE):
+        return None
+    with open(SNAPSHOT_FILE, encoding="utf-8") as f:
+        data = json.load(f)
+    return set(data["followers"]), set(data["following"])
+
+
+def save_snapshot(followers, following):
+    ensure_dir()
+    with open(SNAPSHOT_FILE, "w", encoding="utf-8") as f:
+        json.dump({
+            "timestamp": datetime.now().isoformat(),
+            "followers": sorted(followers),
+            "following": sorted(following),
+        }, f, ensure_ascii=False, indent=2)
+
+
+def log_event(text):
+    ensure_dir()
+    with open(HISTORY_FILE, "a", encoding="utf-8") as f:
+        f.write(text + "\n")
+
+
+def ts():
+    return datetime.now().strftime("%H:%M:%S")
+
+
+def check():
+    print(f"[{ts()}] Prihlasuji se...")
+    cl = ig_login()
+
+    print(f"[{ts()}] Hledam @{TARGET}...")
+    target_info = cl.user_info_by_username(TARGET)
+    target_id = str(target_info.pk)
+
+    print(f"[{ts()}] Stahuji followers @{TARGET}...")
+    followers = fetch_users(cl, target_id, cl.user_followers)
+
+    print(f"[{ts()}] Stahuji following @{TARGET}...")
+    following = fetch_users(cl, target_id, cl.user_following)
+
+    print(f"[{ts()}] @{TARGET} ma {len(followers)} sledujicich, sleduje {len(following)} lidi")
 
     previous = load_snapshot()
-    events = []
 
     if previous is None:
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] První spuštění — ukládám výchozí snapshot.")
-    else:
-        old_followers, old_following = previous
-        now = datetime.now().isoformat()
-
-        new_followers, lost_followers = compare(old_followers, current_followers)
-        new_following, lost_following = compare(old_following, current_following)
-
-        for u in sorted(new_followers):
-            events.append({"timestamp": now, "type": "new_follower", "username": u})
-        for u in sorted(lost_followers):
-            events.append({"timestamp": now, "type": "lost_follower", "username": u})
-        for u in sorted(new_following):
-            events.append({"timestamp": now, "type": "new_following", "username": u})
-        for u in sorted(lost_following):
-            events.append({"timestamp": now, "type": "lost_following", "username": u})
-
-        if events:
-            notify(events, target_username)
-            save_history(events)
-        else:
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] Žádné změny.")
-
-    save_snapshot(current_followers, current_following)
-    return events
-
-
-def show_history():
-    history_path = os.path.join(os.path.dirname(__file__), "data", "history.jsonl")
-    if not os.path.exists(history_path):
-        print("Zatím žádná historie.")
+        print(f"[{ts()}] Prvni kontrola — ukladam snapshot. Zmeny uvidis priste.")
+        save_snapshot(followers, following)
         return
 
-    import json
-    target = os.environ.get("TARGET_USERNAME", "jana_pirkova_")
-    print(f"Historie změn pro @{target}:\n")
-    with open(history_path, encoding="utf-8") as f:
-        for line in f:
-            event = json.loads(line)
-            ts = event["timestamp"][:16].replace("T", " ")
-            label = {
-                "new_follower": "Nový sledující",
-                "lost_follower": "Přestal ji sledovat",
-                "new_following": "Začala sledovat",
-                "lost_following": "Přestala sledovat",
-            }.get(event["type"], event["type"])
-            print(f"  {ts}  {label}: @{event['username']}")
+    old_followers, old_following = previous
+    now = datetime.now().strftime("%d.%m.%Y %H:%M")
+    changes = False
+
+    new_followers = followers - old_followers
+    lost_followers = old_followers - followers
+    new_following = following - old_following
+    lost_following = old_following - following
+
+    for u in sorted(new_followers):
+        msg = f"[{now}]  +sledujici   @{u} zacal sledovat @{TARGET}"
+        print(f"  >>> {msg}")
+        log_event(msg)
+        changes = True
+
+    for u in sorted(lost_followers):
+        msg = f"[{now}]  -sledujici   @{u} prestal sledovat @{TARGET}"
+        print(f"  >>> {msg}")
+        log_event(msg)
+        changes = True
+
+    for u in sorted(new_following):
+        msg = f"[{now}]  +sleduje     @{TARGET} zacala sledovat @{u}"
+        print(f"  >>> {msg}")
+        log_event(msg)
+        changes = True
+
+    for u in sorted(lost_following):
+        msg = f"[{now}]  -sleduje     @{TARGET} prestala sledovat @{u}"
+        print(f"  >>> {msg}")
+        log_event(msg)
+        changes = True
+
+    if not changes:
+        print(f"[{ts()}] Zadne zmeny.")
+
+    save_snapshot(followers, following)
 
 
 def main():
-    load_dotenv()
+    print(f"{'=' * 50}")
+    print(f"  Instagram Monitor — @{TARGET}")
+    print(f"  Kontrola kazdych {CHECK_INTERVAL} minut")
+    print(f"  Ctrl+C pro ukonceni")
+    print(f"{'=' * 50}")
+    print()
 
-    parser = argparse.ArgumentParser(description="Instagram Follow Monitor")
-    parser.add_argument("--loop", action="store_true", help="Běží v cyklu")
-    parser.add_argument("--history", action="store_true", help="Zobrazí historii změn")
-    args = parser.parse_args()
+    while True:
+        try:
+            check()
+        except KeyboardInterrupt:
+            print("\nUkonceno.")
+            break
+        except Exception as e:
+            print(f"[{ts()}] CHYBA: {e}")
 
-    if args.history:
-        show_history()
-        return
-
-    if not os.environ.get("IG_USERNAME") or not os.environ.get("IG_PASSWORD"):
-        print("Chyba: Nastav IG_USERNAME a IG_PASSWORD v souboru .env")
-        print("Viz .env.example")
-        sys.exit(1)
-
-    if args.loop:
-        interval = int(os.environ.get("CHECK_INTERVAL", "30"))
-        target = os.environ.get("TARGET_USERNAME", "jana_pirkova_")
-        print(f"Spouštím monitor pro @{target} (interval: {interval} min)")
-        print("Ctrl+C pro ukončení\n")
-        while True:
-            try:
-                check_once()
-            except Exception as e:
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] Chyba: {e}")
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] Další kontrola za {interval} min...\n")
-            time.sleep(interval * 60)
-    else:
-        check_once()
+        print(f"[{ts()}] Dalsi kontrola za {CHECK_INTERVAL} min...\n")
+        try:
+            time.sleep(CHECK_INTERVAL * 60)
+        except KeyboardInterrupt:
+            print("\nUkonceno.")
+            break
 
 
 if __name__ == "__main__":
