@@ -2,7 +2,7 @@
 """
 Instagram Monitor pro vice uctu.
 Sleduje zmeny ve followers/following, Close Friends status,
-a nove stories.
+nove stories a komentare pod prispevky.
 
 Spusteni:
     pip install instagrapi
@@ -19,13 +19,16 @@ from instagrapi import Client
 TARGETS = ["jana_pirkova_", "pirkovis"]
 CLOSE_FRIENDS_WATCH = ["jana_pirkova_"]
 STORIES_WATCH = ["jana_pirkova_"]
+COMMENTS_WATCH = ["jana_pirkova_"]
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 CREDS_FILE = os.path.join(DATA_DIR, "credentials.json")
 SESSION_FILE = os.path.join(DATA_DIR, "session.json")
 HISTORY_FILE = os.path.join(DATA_DIR, "history.txt")
 CF_STATUS_FILE = os.path.join(DATA_DIR, "close_friends_status.json")
 SEEN_STORIES_FILE = os.path.join(DATA_DIR, "seen_stories.json")
+SEEN_COMMENTS_FILE = os.path.join(DATA_DIR, "seen_comments.json")
 CHECK_INTERVAL = 30
+POSTS_TO_CHECK = 5
 
 
 def ensure_dir():
@@ -119,6 +122,19 @@ def save_seen_stories(seen):
         json.dump(seen, f, ensure_ascii=False, indent=2)
 
 
+def load_seen_comments():
+    if not os.path.exists(SEEN_COMMENTS_FILE):
+        return {}
+    with open(SEEN_COMMENTS_FILE, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def save_seen_comments(seen):
+    ensure_dir()
+    with open(SEEN_COMMENTS_FILE, "w", encoding="utf-8") as f:
+        json.dump(seen, f, ensure_ascii=False, indent=2)
+
+
 def log_event(text):
     ensure_dir()
     with open(HISTORY_FILE, "a", encoding="utf-8") as f:
@@ -136,7 +152,7 @@ def check_stories(cl, target, target_id):
         stories = cl.user_stories(target_id)
     except Exception as e:
         print(f"[{ts()}] Nepodarilo se stahnout stories: {e}")
-        return stories if 'stories' in dir() else []
+        return []
 
     if not stories:
         print(f"[{ts()}] @{target} nema zadne aktivni stories.")
@@ -213,6 +229,64 @@ def check_close_friends(stories, target):
     save_cf_status(cf_status)
 
 
+def check_comments(cl, target, target_id):
+    print(f"[{ts()}] Kontroluji komentare pod prispevky @{target}...")
+
+    try:
+        medias = cl.user_medias(int(target_id), amount=POSTS_TO_CHECK)
+    except Exception as e:
+        print(f"[{ts()}] Nepodarilo se stahnout prispevky: {e}")
+        return
+
+    if not medias:
+        print(f"[{ts()}] @{target} nema zadne prispevky.")
+        return
+
+    seen = load_seen_comments()
+    if target not in seen:
+        seen[target] = {}
+
+    now = datetime.now().strftime("%d.%m.%Y %H:%M")
+    total_new = 0
+
+    for media in medias:
+        media_pk = str(media.pk)
+        seen_comment_ids = set(seen[target].get(media_pk, []))
+
+        try:
+            comments = cl.media_comments(media.pk, amount=20)
+        except Exception as e:
+            print(f"[{ts()}] Nepodarilo se stahnout komentare: {e}")
+            continue
+
+        new_comments = [c for c in comments if str(c.pk) not in seen_comment_ids]
+
+        if not seen_comment_ids and new_comments:
+            seen[target][media_pk] = [str(c.pk) for c in comments]
+            if not seen.get(target + "_initialized"):
+                continue
+
+        for c in new_comments:
+            comment_time = c.created_at_utc.strftime("%H:%M") if c.created_at_utc else "?"
+            text = c.text[:80] if c.text else ""
+            author = c.user.username if c.user else "?"
+            msg = f"[{now}]  KOMENT   @{author} komentoval/a prispevek @{target}: \"{text}\""
+            print(f"  >>> {msg}")
+            log_event(msg)
+            total_new += 1
+
+        seen[target][media_pk] = [str(c.pk) for c in comments]
+
+    seen[target + "_initialized"] = True
+
+    if total_new == 0:
+        print(f"[{ts()}] Zadne nove komentare.")
+    else:
+        print(f"[{ts()}] Celkem {total_new} novych komentaru.")
+
+    save_seen_comments(seen)
+
+
 def check_target(cl, target, target_id):
     print(f"\n[{ts()}] --- @{target} ---")
 
@@ -274,8 +348,9 @@ def check():
     print(f"[{ts()}] Prihlasuji se...")
     cl = ig_login()
 
+    all_targets = set(TARGETS + STORIES_WATCH + CLOSE_FRIENDS_WATCH + COMMENTS_WATCH)
     target_ids = {}
-    for target in set(TARGETS + STORIES_WATCH + CLOSE_FRIENDS_WATCH):
+    for target in all_targets:
         try:
             info = cl.user_info_by_username(target)
             target_ids[target] = str(info.pk)
@@ -300,12 +375,21 @@ def check():
         except Exception as e:
             print(f"[{ts()}] CHYBA stories @{target}: {e}")
 
+    for target in COMMENTS_WATCH:
+        if target not in target_ids:
+            continue
+        try:
+            check_comments(cl, target, target_ids[target])
+        except Exception as e:
+            print(f"[{ts()}] CHYBA komentare @{target}: {e}")
+
 
 def main():
     print(f"{'=' * 50}")
     print(f"  Instagram Monitor")
     print(f"  Sleduji: {', '.join('@' + t for t in TARGETS)}")
     print(f"  Stories: {', '.join('@' + t for t in STORIES_WATCH)}")
+    print(f"  Komentare: {', '.join('@' + t for t in COMMENTS_WATCH)}")
     print(f"  Close Friends: {', '.join('@' + t for t in CLOSE_FRIENDS_WATCH)}")
     print(f"  Kontrola kazdych {CHECK_INTERVAL} minut")
     print(f"  Ctrl+C pro ukonceni")
