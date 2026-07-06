@@ -12,6 +12,7 @@ Spusteni:
 
 import json
 import os
+import re
 import time
 import getpass
 import argparse
@@ -136,6 +137,85 @@ def save_seen_comments(seen):
     ensure_dir()
     with open(SEEN_COMMENTS_FILE, "w", encoding="utf-8") as f:
         json.dump(seen, f, ensure_ascii=False, indent=2)
+
+
+def fetch_highlight_items_raw(cl, highlight_pk):
+    try:
+        result = cl.private_request(
+            "feed/reels_media/",
+            data={"reel_ids": [f"highlight:{highlight_pk}"]},
+        )
+        reels = result.get("reels", {})
+        reel = reels.get(f"highlight:{highlight_pk}", {})
+        return reel.get("items", [])
+    except Exception:
+        result = cl.private_request(
+            f"feed/reels_media/?reel_ids=highlight:{highlight_pk}"
+        )
+        reels = result.get("reels", {})
+        reel = reels.get(f"highlight:{highlight_pk}", {})
+        return reel.get("items", [])
+
+
+def parse_raw_story(item):
+    media_type = "video" if item.get("media_type") == 2 else "foto"
+    taken_ts = item.get("taken_at", 0)
+    taken = datetime.fromtimestamp(taken_ts).strftime("%d.%m.%Y %H:%M") if taken_ts else "?"
+
+    details = []
+    mentions = []
+
+    reel_mentions = item.get("reel_mentions", [])
+    for m in reel_mentions:
+        user = m.get("user", {})
+        username = user.get("username", "?")
+        mentions.append(username)
+        details.append(f"oznacen/a: @{username}")
+
+    story_feed_media = item.get("story_feed_media", [])
+    if story_feed_media:
+        details.append("sdileny prispevek")
+
+    story_hashtags = item.get("story_hashtags", [])
+    for h in story_hashtags:
+        hashtag = h.get("hashtag", {})
+        name = hashtag.get("name", "")
+        if name:
+            details.append(f"#{name}")
+
+    story_locations = item.get("story_locations", [])
+    for loc in story_locations:
+        location = loc.get("location", {})
+        loc_name = location.get("name", "")
+        if loc_name:
+            details.append(f"lokace: {loc_name}")
+
+    story_polls = item.get("story_polls", [])
+    for p in story_polls:
+        poll = p.get("poll_sticker", {})
+        question = poll.get("question", "")
+        if question:
+            details.append(f"anketa: {question}")
+
+    story_questions = item.get("story_questions", [])
+    for q in story_questions:
+        qs = q.get("question_sticker", {})
+        question = qs.get("question", "")
+        if question:
+            details.append(f"otazka: {question}")
+
+    story_quizs = item.get("story_quizs", [])
+    for q in story_quizs:
+        quiz = q.get("quiz_sticker", {})
+        question = quiz.get("question", "")
+        if question:
+            details.append(f"kviz: {question}")
+
+    story_sliders = item.get("story_sliders", [])
+    if story_sliders:
+        details.append("slider/emoji reakce")
+
+    return media_type, taken, details, mentions
 
 
 def log_event(text):
@@ -425,7 +505,6 @@ def run_stats(cl, targets):
 
             # Zminky v caption
             if media.caption_text:
-                import re
                 caption_mentions = re.findall(r"@(\w+)", media.caption_text)
                 for m in caption_mentions:
                     mention_counter[m] += 1
@@ -462,17 +541,14 @@ def run_stats(cl, targets):
             highlights = cl.user_highlights(int(target_id))
             print(f"  Nalezeno {len(highlights)} highlightu.")
             for hl in highlights:
-                hl_title = hl.title or "(bez nazvu)"
                 try:
-                    hl_info = cl.highlight_info(hl.pk)
-                    items = hl_info.items if hasattr(hl_info, "items") and hl_info.items else []
+                    items = fetch_highlight_items_raw(cl, hl.pk)
                     total_highlight_stories += len(items)
-                    for s in items:
-                        if hasattr(s, "mentions") and s.mentions:
-                            for m in s.mentions:
-                                username = m.user.username
-                                highlight_mention_counter[username] += 1
-                                mention_counter[username] += 1
+                    for item in items:
+                        _, _, _, item_mentions = parse_raw_story(item)
+                        for username in item_mentions:
+                            highlight_mention_counter[username] += 1
+                            mention_counter[username] += 1
                 except Exception:
                     pass
             print(f"  Celkem {total_highlight_stories} stories ve vyberech.")
@@ -544,8 +620,7 @@ def run_highlights(cl, targets):
             print(f"  --- Vyber: {hl_title} ---")
 
             try:
-                hl_info = cl.highlight_info(hl.pk)
-                items = hl_info.items if hasattr(hl_info, "items") and hl_info.items else []
+                items = fetch_highlight_items_raw(cl, hl.pk)
             except Exception as e:
                 print(f"    CHYBA: {e}")
                 continue
@@ -556,47 +631,8 @@ def run_highlights(cl, targets):
 
             print(f"    {len(items)} stories:\n")
 
-            for s in items:
-                media_type = "video" if getattr(s, "media_type", 1) == 2 else "foto"
-                taken = s.taken_at.strftime("%d.%m.%Y %H:%M") if getattr(s, "taken_at", None) else "?"
-
-                details = []
-
-                if hasattr(s, "mentions") and s.mentions:
-                    for m in s.mentions:
-                        details.append(f"oznacen/a: @{m.user.username}")
-
-                if hasattr(s, "story_feed_media") and s.story_feed_media:
-                    details.append("sdileny prispevek")
-
-                if hasattr(s, "story_hashtags") and s.story_hashtags:
-                    for h in s.story_hashtags:
-                        if hasattr(h, "hashtag") and h.hashtag:
-                            details.append(f"#{h.hashtag.name}")
-
-                if hasattr(s, "story_locations") and s.story_locations:
-                    for loc in s.story_locations:
-                        if hasattr(loc, "location") and loc.location:
-                            details.append(f"lokace: {loc.location.name}")
-
-                if hasattr(s, "story_polls") and s.story_polls:
-                    for p in s.story_polls:
-                        if hasattr(p, "poll") and p.poll:
-                            details.append(f"anketa: {p.poll.question}")
-
-                if hasattr(s, "story_questions") and s.story_questions:
-                    for q in s.story_questions:
-                        if hasattr(q, "question_sticker") and q.question_sticker:
-                            details.append(f"otazka: {q.question_sticker.question}")
-
-                if hasattr(s, "story_quizs") and s.story_quizs:
-                    for q in s.story_quizs:
-                        if hasattr(q, "quiz") and q.quiz:
-                            details.append(f"kviz: {q.quiz.question}")
-
-                if hasattr(s, "story_sliders") and s.story_sliders:
-                    details.append("slider/emoji reakce")
-
+            for item in items:
+                media_type, taken, details, _ = parse_raw_story(item)
                 detail_str = f"\n             {', '.join(details)}" if details else ""
                 print(f"    [{taken}] {media_type}{detail_str}")
 
