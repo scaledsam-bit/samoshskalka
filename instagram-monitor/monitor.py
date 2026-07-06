@@ -454,6 +454,31 @@ def run_stats(cl, targets):
         except Exception:
             pass
 
+        # Analyzuj highlights (vybery)
+        print(f"\n  Stahuji highlights (vybery) @{target}...")
+        highlight_mention_counter = Counter()
+        total_highlight_stories = 0
+        try:
+            highlights = cl.user_highlights(int(target_id))
+            print(f"  Nalezeno {len(highlights)} highlightu.")
+            for hl in highlights:
+                hl_title = hl.title or "(bez nazvu)"
+                try:
+                    hl_info = cl.highlight_info(hl.pk)
+                    items = hl_info.items if hasattr(hl_info, "items") and hl_info.items else []
+                    total_highlight_stories += len(items)
+                    for s in items:
+                        if hasattr(s, "mentions") and s.mentions:
+                            for m in s.mentions:
+                                username = m.user.username
+                                highlight_mention_counter[username] += 1
+                                mention_counter[username] += 1
+                except Exception:
+                    pass
+            print(f"  Celkem {total_highlight_stories} stories ve vyberech.")
+        except Exception as e:
+            print(f"  CHYBA pri stahovani highlightu: {e}")
+
         # Vysledky
         print(f"\n  --- Nejvice oznacovani v postech (tagy na fotkach) ---")
         if tag_counter:
@@ -476,10 +501,106 @@ def run_stats(cl, targets):
         else:
             print(f"    Zadne komentare.")
 
+        print(f"\n  --- Nejvice oznacovani ve vyberech (highlights) ---")
+        if highlight_mention_counter:
+            for user, count in highlight_mention_counter.most_common(15):
+                print(f"    {count:>4}x  @{user}")
+        else:
+            print(f"    Zadne oznaceni ve vyberech.")
+
         total_tags = sum(tag_counter.values())
         total_mentions = sum(mention_counter.values())
         total_comments = sum(comment_counter.values())
-        print(f"\n  CELKEM: {len(medias)} prispevku, {total_tags} tagu, {total_mentions} zminек, {total_comments} komentaru")
+        print(f"\n  CELKEM: {len(medias)} prispevku, {total_highlight_stories} stories ve vyberech, {total_tags} tagu, {total_mentions} zminek, {total_comments} komentaru")
+
+
+def run_highlights(cl, targets):
+    for target in targets:
+        print(f"\n{'=' * 50}")
+        print(f"  VYBERY (HIGHLIGHTS) @{target}")
+        print(f"{'=' * 50}")
+
+        try:
+            info = cl.user_info_by_username(target)
+            target_id = str(info.pk)
+        except Exception as e:
+            print(f"  CHYBA: {e}")
+            continue
+
+        try:
+            highlights = cl.user_highlights(int(target_id))
+        except Exception as e:
+            print(f"  CHYBA pri stahovani highlightu: {e}")
+            continue
+
+        if not highlights:
+            print(f"  @{target} nema zadne vybery.")
+            continue
+
+        print(f"  Nalezeno {len(highlights)} vyberu.\n")
+
+        for hl in highlights:
+            hl_title = hl.title or "(bez nazvu)"
+            print(f"  --- Vyber: {hl_title} ---")
+
+            try:
+                hl_info = cl.highlight_info(hl.pk)
+                items = hl_info.items if hasattr(hl_info, "items") and hl_info.items else []
+            except Exception as e:
+                print(f"    CHYBA: {e}")
+                continue
+
+            if not items:
+                print(f"    Prazdny vyber.")
+                continue
+
+            print(f"    {len(items)} stories:\n")
+
+            for s in items:
+                media_type = "video" if getattr(s, "media_type", 1) == 2 else "foto"
+                taken = s.taken_at.strftime("%d.%m.%Y %H:%M") if getattr(s, "taken_at", None) else "?"
+
+                details = []
+
+                if hasattr(s, "mentions") and s.mentions:
+                    for m in s.mentions:
+                        details.append(f"oznacen/a: @{m.user.username}")
+
+                if hasattr(s, "story_feed_media") and s.story_feed_media:
+                    details.append("sdileny prispevek")
+
+                if hasattr(s, "story_hashtags") and s.story_hashtags:
+                    for h in s.story_hashtags:
+                        if hasattr(h, "hashtag") and h.hashtag:
+                            details.append(f"#{h.hashtag.name}")
+
+                if hasattr(s, "story_locations") and s.story_locations:
+                    for loc in s.story_locations:
+                        if hasattr(loc, "location") and loc.location:
+                            details.append(f"lokace: {loc.location.name}")
+
+                if hasattr(s, "story_polls") and s.story_polls:
+                    for p in s.story_polls:
+                        if hasattr(p, "poll") and p.poll:
+                            details.append(f"anketa: {p.poll.question}")
+
+                if hasattr(s, "story_questions") and s.story_questions:
+                    for q in s.story_questions:
+                        if hasattr(q, "question_sticker") and q.question_sticker:
+                            details.append(f"otazka: {q.question_sticker.question}")
+
+                if hasattr(s, "story_quizs") and s.story_quizs:
+                    for q in s.story_quizs:
+                        if hasattr(q, "quiz") and q.quiz:
+                            details.append(f"kviz: {q.quiz.question}")
+
+                if hasattr(s, "story_sliders") and s.story_sliders:
+                    details.append("slider/emoji reakce")
+
+                detail_str = f"\n             {', '.join(details)}" if details else ""
+                print(f"    [{taken}] {media_type}{detail_str}")
+
+            print()
 
 
 def check():
@@ -526,9 +647,18 @@ def main():
     parser = argparse.ArgumentParser(description="Instagram Monitor")
     parser.add_argument("--stats", action="store_true",
                         help="Analyza: kdo nejvic komentuje a je oznacovany")
+    parser.add_argument("--highlights", action="store_true",
+                        help="Vypis vsech stories ze vsech vyberu (highlights)")
     parser.add_argument("--stats-target", nargs="*",
                         help="Ucty pro analyzu (vychozi: jana_pirkova_ pirkovis)")
     args = parser.parse_args()
+
+    if args.highlights:
+        print("Prihlasuji se...")
+        cl = ig_login()
+        targets = args.stats_target if args.stats_target else ["jana_pirkova_", "pirkovis"]
+        run_highlights(cl, targets)
+        return
 
     if args.stats:
         print("Prihlasuji se...")
