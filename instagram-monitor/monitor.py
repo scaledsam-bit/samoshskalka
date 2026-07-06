@@ -24,6 +24,8 @@ from instagrapi import Client
 
 TARGETS = ["jana_pirkova_", "pirkovis"]
 
+WATCH_USERS = {"jtomekprivat", "jtomekk__"}
+
 MALE_NAMES = {
     "adam", "ales", "alexandr", "alfred", "andrej", "antonin", "boris",
     "dalibor", "dan", "daniel", "david", "denis", "dominik", "dušan",
@@ -69,9 +71,12 @@ def is_male_user(cl, username):
 
 
 def guy_tag(cl, username):
+    parts = []
+    if username in WATCH_USERS:
+        parts.append("!!! POZOR: SLEDOVANY !!!")
     if is_male_user(cl, username):
-        return " !!! KLUK !!!"
-    return ""
+        parts.append("!!! KLUK !!!")
+    return (" " + " ".join(parts)) if parts else ""
 CLOSE_FRIENDS_WATCH = ["jana_pirkova_", "pirkovis"]
 STORIES_WATCH = ["jana_pirkova_", "pirkovis"]
 COMMENTS_WATCH = ["jana_pirkova_", "pirkovis"]
