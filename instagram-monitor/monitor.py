@@ -20,7 +20,7 @@ from datetime import datetime
 from instagrapi import Client
 
 TARGETS = ["jana_pirkova_", "pirkovis"]
-CLOSE_FRIENDS_WATCH = ["jana_pirkova_"]
+CLOSE_FRIENDS_WATCH = ["jana_pirkova_", "pirkovis"]
 STORIES_WATCH = ["jana_pirkova_", "pirkovis"]
 COMMENTS_WATCH = ["jana_pirkova_", "pirkovis"]
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
@@ -148,6 +148,59 @@ def ts():
     return datetime.now().strftime("%H:%M:%S")
 
 
+def format_story_detail(s, target):
+    media_type = "video" if s.media_type == 2 else "foto"
+    is_cf = getattr(s, "is_close_friends", False)
+    cf_tag = " [CLOSE FRIENDS]" if is_cf else ""
+    taken = s.taken_at.strftime("%d.%m. %H:%M") if s.taken_at else "?"
+
+    details = []
+
+    if hasattr(s, "mentions") and s.mentions:
+        for m in s.mentions:
+            details.append(f"oznacen/a: @{m.user.username}")
+
+    if hasattr(s, "story_feed_media") and s.story_feed_media:
+        details.append("sdileny prispevek")
+
+    if hasattr(s, "story_hashtags") and s.story_hashtags:
+        for h in s.story_hashtags:
+            if hasattr(h, "hashtag") and h.hashtag:
+                details.append(f"#{h.hashtag.name}")
+
+    if hasattr(s, "story_locations") and s.story_locations:
+        for loc in s.story_locations:
+            if hasattr(loc, "location") and loc.location:
+                details.append(f"lokace: {loc.location.name}")
+
+    if hasattr(s, "story_stickers") and s.story_stickers:
+        for st in s.story_stickers:
+            if hasattr(st, "story_sticker_type"):
+                details.append(f"sticker: {st.story_sticker_type}")
+
+    if hasattr(s, "story_polls") and s.story_polls:
+        for p in s.story_polls:
+            if hasattr(p, "poll") and p.poll:
+                details.append(f"anketa: {p.poll.question}")
+
+    if hasattr(s, "story_questions") and s.story_questions:
+        for q in s.story_questions:
+            if hasattr(q, "question_sticker") and q.question_sticker:
+                details.append(f"otazka: {q.question_sticker.question}")
+
+    if hasattr(s, "story_sliders") and s.story_sliders:
+        details.append("slider/emoji reakce")
+
+    if hasattr(s, "story_quizs") and s.story_quizs:
+        for q in s.story_quizs:
+            if hasattr(q, "quiz") and q.quiz:
+                details.append(f"kviz: {q.quiz.question}")
+
+    detail_str = f" | {', '.join(details)}" if details else ""
+
+    return f"@{target} {media_type} {taken}{cf_tag}{detail_str}", is_cf
+
+
 def check_stories(cl, target, target_id):
     print(f"[{ts()}] Kontroluji stories @{target}...")
 
@@ -166,29 +219,19 @@ def check_stories(cl, target, target_id):
     now = datetime.now().strftime("%d.%m.%Y %H:%M")
 
     new_stories = [s for s in stories if str(s.pk) not in seen_ids]
+    cf_stories = [s for s in stories if getattr(s, "is_close_friends", False)]
+
+    if cf_stories:
+        print(f"[{ts()}] @{target} ma {len(cf_stories)} CLOSE FRIENDS stories:")
+        for s in cf_stories:
+            detail, _ = format_story_detail(s, target)
+            print(f"  [CF] {detail}")
 
     if new_stories:
         print(f"[{ts()}] @{target} ma {len(new_stories)} novych stories!")
         for s in new_stories:
-            media_type = "video" if s.media_type == 2 else "foto"
-            cf_tag = " [CLOSE FRIENDS]" if getattr(s, "is_close_friends", False) else ""
-            taken = s.taken_at.strftime("%H:%M") if s.taken_at else "?"
-
-            mentions = []
-            if hasattr(s, "story_feed_media") and s.story_feed_media:
-                for m in s.story_feed_media:
-                    if hasattr(m, "media_id"):
-                        mentions.append("sdileny prispevek")
-
-            if hasattr(s, "mentions") and s.mentions:
-                for m in s.mentions:
-                    mentions.append(f"@{m.user.username}")
-
-            mention_str = ""
-            if mentions:
-                mention_str = f" | oznaceni: {', '.join(mentions)}"
-
-            msg = f"[{now}]  STORY    @{target} pridal/a {media_type} v {taken}{cf_tag}{mention_str}"
+            detail, is_cf = format_story_detail(s, target)
+            msg = f"[{now}]  STORY    {detail}"
             print(f"  >>> {msg}")
             log_event(msg)
     else:
