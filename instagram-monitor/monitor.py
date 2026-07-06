@@ -2,24 +2,27 @@
 """
 Instagram Monitor pro vice uctu.
 Sleduje zmeny ve followers/following, Close Friends status,
-nove stories a komentare pod prispevky.
+nove stories, komentare pod prispevky a statistiky oznaceni/komentaru.
 
 Spusteni:
     pip install instagrapi
-    python monitor.py
+    python monitor.py                # normalni monitoring
+    python monitor.py --stats        # analyza kdo nejvic komentuje/je oznacovany
 """
 
 import json
 import os
 import time
 import getpass
+import argparse
+from collections import Counter
 from datetime import datetime
 from instagrapi import Client
 
 TARGETS = ["jana_pirkova_", "pirkovis"]
 CLOSE_FRIENDS_WATCH = ["jana_pirkova_"]
-STORIES_WATCH = ["jana_pirkova_"]
-COMMENTS_WATCH = ["jana_pirkova_"]
+STORIES_WATCH = ["jana_pirkova_", "pirkovis"]
+COMMENTS_WATCH = ["jana_pirkova_", "pirkovis"]
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 CREDS_FILE = os.path.join(DATA_DIR, "credentials.json")
 SESSION_FILE = os.path.join(DATA_DIR, "session.json")
@@ -267,7 +270,6 @@ def check_comments(cl, target, target_id):
                 continue
 
         for c in new_comments:
-            comment_time = c.created_at_utc.strftime("%H:%M") if c.created_at_utc else "?"
             text = c.text[:80] if c.text else ""
             author = c.user.username if c.user else "?"
             msg = f"[{now}]  KOMENT   @{author} komentoval/a prispevek @{target}: \"{text}\""
@@ -344,6 +346,99 @@ def check_target(cl, target, target_id):
     save_snapshot(target, followers, following)
 
 
+def run_stats(cl, targets):
+    for target in targets:
+        print(f"\n{'=' * 50}")
+        print(f"  STATISTIKY @{target}")
+        print(f"{'=' * 50}")
+
+        try:
+            info = cl.user_info_by_username(target)
+            target_id = str(info.pk)
+        except Exception as e:
+            print(f"  CHYBA: {e}")
+            continue
+
+        mention_counter = Counter()
+        comment_counter = Counter()
+        tag_counter = Counter()
+
+        # Analyzuj vsechny prispevky
+        print(f"\n  Stahuji prispevky @{target}...")
+        try:
+            medias = cl.user_medias(int(target_id), amount=0)
+        except Exception as e:
+            print(f"  CHYBA pri stahovani prispevku: {e}")
+            medias = []
+
+        print(f"  Nalezeno {len(medias)} prispevku. Analyza...")
+
+        for i, media in enumerate(medias):
+            # Oznaceni v prispevku (tagy)
+            if hasattr(media, "usertags") and media.usertags:
+                for tag in media.usertags:
+                    if hasattr(tag, "user") and tag.user:
+                        tag_counter[tag.user.username] += 1
+
+            # Zminky v caption
+            if media.caption_text:
+                import re
+                caption_mentions = re.findall(r"@(\w+)", media.caption_text)
+                for m in caption_mentions:
+                    mention_counter[m] += 1
+
+            # Komentare
+            try:
+                comments = cl.media_comments(media.pk, amount=0)
+                for c in comments:
+                    if c.user:
+                        comment_counter[c.user.username] += 1
+            except Exception:
+                pass
+
+            if (i + 1) % 10 == 0:
+                print(f"  ... zpracovano {i + 1}/{len(medias)} prispevku")
+
+        # Analyzuj stories (jen aktivni)
+        print(f"\n  Kontroluji aktivni stories @{target}...")
+        try:
+            stories = cl.user_stories(target_id)
+            for s in stories:
+                if hasattr(s, "mentions") and s.mentions:
+                    for m in s.mentions:
+                        mention_counter[m.user.username] += 1
+            print(f"  {len(stories)} aktivnich stories.")
+        except Exception:
+            pass
+
+        # Vysledky
+        print(f"\n  --- Nejvice oznacovani v postech (tagy na fotkach) ---")
+        if tag_counter:
+            for user, count in tag_counter.most_common(15):
+                print(f"    {count:>4}x  @{user}")
+        else:
+            print(f"    Zadne tagy.")
+
+        print(f"\n  --- Nejvice zminovani v popisech (@zminky) ---")
+        if mention_counter:
+            for user, count in mention_counter.most_common(15):
+                print(f"    {count:>4}x  @{user}")
+        else:
+            print(f"    Zadne zminky.")
+
+        print(f"\n  --- Nejvice komentujici ---")
+        if comment_counter:
+            for user, count in comment_counter.most_common(15):
+                print(f"    {count:>4}x  @{user}")
+        else:
+            print(f"    Zadne komentare.")
+
+        total_tags = sum(tag_counter.values())
+        total_mentions = sum(mention_counter.values())
+        total_comments = sum(comment_counter.values())
+        print(f"\n  CELKEM: {len(medias)} prispevku, {total_tags} tagu, {total_mentions} zminек, {total_comments} komentaru")
+
+
 def check():
     print(f"[{ts()}] Prihlasuji se...")
     cl = ig_login()
@@ -385,6 +480,20 @@ def check():
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Instagram Monitor")
+    parser.add_argument("--stats", action="store_true",
+                        help="Analyza: kdo nejvic komentuje a je oznacovany")
+    parser.add_argument("--stats-target", nargs="*",
+                        help="Ucty pro analyzu (vychozi: jana_pirkova_ pirkovis)")
+    args = parser.parse_args()
+
+    if args.stats:
+        print("Prihlasuji se...")
+        cl = ig_login()
+        targets = args.stats_target if args.stats_target else ["jana_pirkova_", "pirkovis"]
+        run_stats(cl, targets)
+        return
+
     print(f"{'=' * 50}")
     print(f"  Instagram Monitor")
     print(f"  Sleduji: {', '.join('@' + t for t in TARGETS)}")
