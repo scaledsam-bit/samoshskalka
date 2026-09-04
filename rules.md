@@ -16,6 +16,5 @@ This is the only part of the system that makes the output better. The rest only 
 
 ## Prefer
 
-<!-- Example, delete once you have real ones:
-- Prefer a first line under four words. It holds better when the video plays on mute.
--->
+- Prefer tactical and outdoor framing for every clip, because the niche is military blankets and generic home-textile styling reads as the wrong product.
+- Prefer formats that are cheap to repeat and vary only the hook, because they publish roughly five organic videos a day and the build has to survive that cadence.
