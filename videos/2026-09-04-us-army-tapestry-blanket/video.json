@@ -1,0 +1,33 @@
+{
+  "slug": "2026-09-04-us-army-tapestry-blanket",
+  "product": "U.S. Army woven tapestry throw blanket, olive drab with gold eagle seal, star border, fringed edge",
+  "niche": "military blankets / veterans and military families",
+  "viral_dna": {
+    "score": 3,
+    "max": 6,
+    "reasons": [
+      "Niche identity: PASS. Veterans, military spouses and Army parents are one of the most defined tribes on the platform, and the seal names the tribe without a word of copy.",
+      "Novel format: FAIL. It is a woven throw. The object itself is not new to look at and the scroll does not stop for it on shape alone.",
+      "Giftability: PASS. Close to a pure gift item. Retirement, homecoming, Veterans Day, Father's Day.",
+      "Portable proof of concept: PASS. One unfold and the whole product is understood. No explaining, no voiceover needed.",
+      "Meme and share potential: FAIL. Nothing to send to a friend for its own sake. The only share is a tag on a relative who served, which is real but thin.",
+      "Where has this been my whole life: FAIL. It resolves no resentment. Nobody is annoyed by the absence of a blanket."
+    ],
+    "verdict": "Weak on the filter. The two missing axes are novel format and problem-solving, and no prompt fixes that. It sells on emotion, not on demonstration, so the format has to carry what the object cannot."
+  },
+  "status": "awaiting_product_approval",
+  "locked": {},
+  "reference": {
+    "path": "",
+    "photos": [],
+    "photos_status": "MISSING - product photo was pasted into chat, never landed on disk. Must be re-attached as a file before /brand or /gen.",
+    "cuts": [],
+    "segments": []
+  },
+  "plan": [],
+  "clips": [],
+  "notes": [
+    "Trademark: U.S. Army marks and the Army seal are licensed through the Army Trademark Licensing Program. Selling merchandise carrying them without a licence is a live legal risk, separate from anything in this pipeline.",
+    "Format implication of the score: lead with the gifting or homecoming moment, not a product demo. The reveal is the unfold."
+  ]
+}
