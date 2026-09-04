@@ -1,0 +1,21 @@
+{
+  "_comment": "Which gates Claude may pass on its own. Everything starts false on purpose. Turn one on at a time, only after that gate has stopped catching problems for you. See GUIDE.pdf, 'Turning on autopilot'.",
+
+  "enabled": false,
+
+  "auto_approve": {
+    "product":  false,
+    "brand":    false,
+    "plan":     false,
+    "clips":    false,
+    "publish":  false
+  },
+
+  "limits": {
+    "max_credits_per_video": 0,
+    "max_videos_per_run": 1,
+    "stop_after_consecutive_rejections": 2
+  },
+
+  "publish_mode": "draft"
+}

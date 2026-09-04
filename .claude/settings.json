@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./bin/cutsheet.sh:*)",
+      "Bash(bash ./bin/cutsheet.sh:*)",
+      "Bash(bin/cutsheet.sh:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(ffprobe:*)",
+      "Read(./videos/**)",
+      "Write(./videos/**)",
+      "Read(./format/**)",
+      "Read(./products.csv)",
+      "Edit(./rules.md)",
+      "Edit(./products.csv)",
+      "Bash(./bin/qa.sh:*)",
+      "Bash(bash ./bin/qa.sh:*)",
+      "Bash(bin/qa.sh:*)",
+      "Read(./videos/**/qa/**)",
+      "Bash(./bin/burn.sh:*)",
+      "Bash(bash ./bin/burn.sh:*)",
+      "Bash(bin/burn.sh:*)"
+    ]
+  }
+}

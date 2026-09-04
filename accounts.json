@@ -1,0 +1,12 @@
+{
+  "_comment": "Per-channel captions and hashtags. Channel ids come from the Buffer channels query, /ship prints them. Delete this comment once you have real entries.",
+  "channels": [
+    {
+      "id": "paste-a-buffer-channel-id-here",
+      "service": "instagram",
+      "caption": "Would you get one? {emoji}",
+      "hashtags": "#yourniche #yourtribe",
+      "post_at": "17:30"
+    }
+  ]
+}
