@@ -15,8 +15,11 @@ inspiration, it is a specification. Read it like one.
 Nothing downstream works until the reference is at a known path, so do this before anything else:
 
 - **A local video file:** copy it to `videos/$slug/reference.mp4`
-- **A URL:** the student downloads it and says where it landed, then copy it to the same path.
-  Do not try to fetch it from a social platform
+- **A URL:** run `./bin/fetch.sh <slug> <url>`. It pulls the file down with yt-dlp, saves it
+  as `reference.mp4` and prints the cut sheet in one step. It refuses to overwrite an existing
+  reference unless `--force`, so re-running costs nothing. If yt-dlp cannot get the link
+  (private, region-locked, login-walled), the student saves it by hand and drops it at that path.
+  Never fetch from a social platform any other way
 - **Screenshots only:** save them into `videos/$slug/reference/` and say plainly that there is
   no cut rhythm to extract, so step 1 is skipped and the durations come from the plan instead
 

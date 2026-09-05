@@ -18,7 +18,11 @@
       "Read(./videos/**/qa/**)",
       "Bash(./bin/burn.sh:*)",
       "Bash(bash ./bin/burn.sh:*)",
-      "Bash(bin/burn.sh:*)"
+      "Bash(bin/burn.sh:*)",
+      "Bash(./bin/fetch.sh:*)",
+      "Bash(bash ./bin/fetch.sh:*)",
+      "Bash(bin/fetch.sh:*)",
+      "Bash(yt-dlp:*)"
     ]
   }
 }
