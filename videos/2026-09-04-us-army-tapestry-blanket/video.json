@@ -149,13 +149,15 @@
       "n": 4,
       "type": "showcase",
       "template": "GENERAL",
-      "route": "T2V",
-      "duration": 8.0,
-      "desc": "The blanket outdoors over a tailgate, slow handheld move in. Tactical framing, not home textile.",
+      "route": "library_file",
+      "duration": 12.042,
+      "desc": "The blanket on a wooden living-room floor, slow push in onto the eagle roundel. Student's own file.",
       "refs": [
         "produkt <<<image_1>>>"
       ],
-      "library": true
+      "library": true,
+      "source": "library/armyworks-tapestry-blanket/clips/showcase.mp4",
+      "generate": false
     }
   ],
   "clips": [],
@@ -196,5 +198,6 @@
     "confirmed": true,
     "note": "Student's own brand. The boxes in the reference are theirs, so this is not a competitor payoff after all."
   },
-  "generation_note": "Seedance's floor is 4 s but segments 1 and 2 are 2.900 s and 3.142 s. Generate both at 4 s and let cutsheet.sh trim them: it keeps the FIRST len seconds, so every beat must land inside the segment length and the tail is throwaway. Trim is 27% and 21%, under the 40% heavy-trim warning."
+  "generation_note": "Seedance's floor is 4 s but segments 1 and 2 are 2.900 s and 3.142 s. Generate both at 4 s and let cutsheet.sh trim them: it keeps the FIRST len seconds, so every beat must land inside the segment length and the tail is throwaway. Trim is 27% and 21%, under the 40% heavy-trim warning.",
+  "total_length": 25.084
 }

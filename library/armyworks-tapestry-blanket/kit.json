@@ -2,8 +2,19 @@
   "product": "ARMYWORKS U.S. Army woven tapestry throw blanket",
   "brand": "ARMYWORKS",
   "clips": {
-    "unbox": {"prompt": "prompts/unbox.txt", "duration": 7.0, "file": "clips/unbox.mp4", "status": "not_generated"},
-    "showcase": {"prompt": "prompts/showcase.txt", "duration": 8.0, "file": "clips/showcase.mp4", "status": "not_generated"}
+    "unbox": {
+      "prompt": "prompts/unbox.txt",
+      "duration": 7.0,
+      "file": "clips/unbox.mp4",
+      "status": "not_generated"
+    },
+    "showcase": {
+      "file": "clips/showcase.mp4",
+      "duration": 12.042,
+      "status": "supplied_by_student",
+      "what": "The blanket laid out on a wooden living-room floor, slow push in onto the eagle roundel.",
+      "note": "Student's own file, used in every video. Do not regenerate. prompts/showcase.txt is kept only as a description of it."
+    }
   },
   "caption": "",
   "hashtags": "",

@@ -16,7 +16,7 @@ This is the only part of the system that makes the output better. The rest only 
 
 ## Prefer
 
-- Prefer tactical and outdoor framing for every clip, because the niche is military blankets and generic home-textile styling reads as the wrong product.
+- Prefer tactical framing on the hook, but the showcase is shot indoors on a wooden floor, because that is the clip the student chose and it is reused in every video.
 - Prefer formats that are cheap to repeat and vary only the hook, because they publish roughly five organic videos a day and the build has to survive that cadence.
 - Prefer letting a shock beat play out physically — the cup drops to the floor rather than being edited away — because the reaction sells the hook better than a clean frame.
 - Prefer the house three act — hook, then POV unboxing, then product showcase — for every product unless a reference says otherwise, because that is the shape they publish and it should never need restating.
