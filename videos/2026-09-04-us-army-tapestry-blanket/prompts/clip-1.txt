@@ -32,15 +32,20 @@ he holds a clear plastic cup of amber liquid. His expression starts as open-mout
 No product in this shot. The shelves hold generic tactical gear only.
 
 9 ACTION & DIALOGUE, TIMED PRECISELY
-0.0-0.6s: he stares off to the right, eyes wide, left hand flying up to his mouth | "Oh my god."
-          | said under his breath, genuinely startled | camera holds, micro-shake
-0.6-1.2s: his right hand goes slack, the cup slips, falls and hits the tile floor, the liquid
-          splashing outward across the tiles | no line | camera holds, he does not look down
-1.2-2.0s: he thrusts his left index finger toward the right, mouth still open | "No way."
-          | half-whispered, disbelieving | camera holds
-2.0-2.9s: the camera whips hard to the right, following his finger, the shelves smearing into
+The timing below is locked to the reference soundtrack, which is laid over this clip in the
+edit. Every beat sits on a measured transient. Do not move them.
+0.00-0.83s: he is already looking off to the right, mouth CLOSED, still. No line, no movement
+          of the jaw | camera holds, micro-shake
+0.83-1.41s: his mouth opens into the shock, left hand flying up toward his chin | "Oh my god."
+          | under his breath, the first half-second of real surprise | camera holds
+1.41s:    his right hand goes slack and the cup hits the tile floor, the liquid splashing
+          outward. This single frame is the hardest beat in the clip.
+1.41-2.30s: he thrusts his left index finger toward the right, mouth still working, he does not
+          look down at the spill | "No way." | half-whispered, rising | camera holds
+2.30-2.78s: his mouth closes on the last word, finger still held out
+2.78-2.90s: the camera whips hard to the right, following his finger, the shelves smearing into
           motion blur | no line | FINAL BEAT
-2.9-4.0s: the whip continues past more shelving and settles. Throwaway tail, trimmed in the edit.
+2.90-4.00s: the whip continues past more shelving and settles. Throwaway tail, trimmed in the edit.
 End.
 
 10 DIALOGUE DELIVERY
@@ -71,7 +76,12 @@ amber liquid, matte black shelf uprights.
 6. Background is identical from first frame to last, apart from the pan.
 7. Single light source: overhead fluorescent, straight down.
 8. The whip pan must be complete by 2.9s. Everything after that is trimmed.
-9. Real time throughout. Not sped up, not slowed.
+9. Mouth movement is locked to the reference audio: CLOSED before 0.83s, speaking 0.83-2.78s,
+   closed after. The reference soundtrack replaces this clip's audio in the edit, so a mouth
+   moving outside that window reads as broken lip sync.
+10. The cup lands at 1.41s, not earlier and not later. That is where the reference has its
+    loudest transient, and it is the only thing that covers a drop the original never had.
+11. Real time throughout. Not sped up, not slowed.
 
 15 DO NOT
 DO NOT:

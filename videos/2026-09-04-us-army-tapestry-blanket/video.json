@@ -52,7 +52,62 @@
     "rotation_metadata": -180,
     "rotation_note": "Display matrix says -180 but the stored pixels are already upright. Read frames with -noautorotate. Harmless for the build: cutsheet.sh takes only audio from the reference.",
     "cuts_source": "forced. Luma detection returns ONE segment at every sane threshold because the reference is a single continuous take. The join at 2.9s is a whip pan, not a cut. /edit MUST be run as: ./bin/cutsheet.sh <ref> <clipsdir> --cuts 2.9 --build <out>",
-    "analysis": "Higgsfield job c58574e7 completed, 2 scenes, split at 0:02. Agrees with the frame read."
+    "analysis": "Higgsfield job c58574e7 completed, 2 scenes, split at 0:02. Agrees with the frame read.",
+    "audio": {
+      "codec": "aac",
+      "sample_rate": 32000,
+      "channels": 2,
+      "content": "Speech and room tone. No music anywhere in the track.",
+      "speech": [
+        {
+          "start": 0.83,
+          "end": 2.78
+        },
+        {
+          "start": 4.8,
+          "end": 5.92
+        }
+      ],
+      "silence": [
+        {
+          "start": 2.78,
+          "end": 4.8
+        }
+      ],
+      "transients": [
+        {
+          "t": 0.83,
+          "peak_dbfs": -20.6
+        },
+        {
+          "t": 1.41,
+          "peak_dbfs": -4.1
+        },
+        {
+          "t": 1.82,
+          "peak_dbfs": -7.2
+        },
+        {
+          "t": 2.3,
+          "peak_dbfs": -8.7
+        },
+        {
+          "t": 4.9,
+          "peak_dbfs": -14.0
+        },
+        {
+          "t": 5.41,
+          "peak_dbfs": -10.8
+        }
+      ],
+      "how_it_reaches_the_final": "bin/cutsheet.sh --build already muxes the reference track onto the finished video and drops every generated clip's own audio (-an per segment). Nothing needs adding for the soundtrack to be 1:1: it already is, for as long as the reference runs.",
+      "consequences": [
+        "Clip 1's mouth movement is locked to 0.83-2.78s. Outside that window the lip sync visibly breaks.",
+        "The cup drop is a beat the original never had, so it has no sound of its own once the reference track is laid over. It is placed at 1.41s, the loudest transient in the reference, which is the only thing that covers it.",
+        "The second utterance at 4.80-5.92s falls over clip 2, which has nobody in frame. An off-screen voice there is fine and needs no lip sync.",
+        "Clips 3 and 4 run past the end of the reference, so they have no soundtrack under them at all."
+      ]
+    }
   },
   "plan": [
     {
