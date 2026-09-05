@@ -1,0 +1,90 @@
+CLIP 4 - SHOWCASE - GENERAL - T2V - 8.0s
+LIBRARY CLIP. Generated once, reused in every ARMYWORKS video. Do not regenerate per video.
+GENERAL rather than T1-T5: none of the five fit a static outdoor product hold with no reveal
+and no person speaking.
+
+<<<image_1>>>   the blanket
+
+1 OPENING LINE
+An 8-second vertical (9:16) UGC video. Format: product showcase, outdoors. Authentic iPhone 12
+filmed aesthetic. The blanket spread over an open tailgate at the back of a truck.
+
+2 CAMERA & FRAMING
+- Back camera of a phone, one hand, natural handheld micro-shake, NOT stabilized, NOT gimbal.
+- Starts at a medium-wide of the open tailgate, moves slowly in to a medium.
+- Movement: a slow steady move in, roughly one pace over the whole clip. No zoom, no orbit.
+- Natural relaxed framing, NOT cinematic, NOT artistic.
+
+3 USE REFERENCE IMAGE 1 FOR THE BLANKET ONLY
+Take the blanket exactly from <<<image_1>>>: the olive drab ground, the black-and-gold star
+border, the dark green star field, the central eagle roundel with its lettering, the gold laurel
+wreath, the crossed rifles and helmet, the fringed edges. Do NOT take the flat-lay angle, the
+studio lighting or the plain background from it.
+
+4 IMAGE QUALITY
+Deep focus, no bokeh, standard iPhone camera, no colour grading, fine natural grain.
+
+5 THE LOCATION
+Outdoors, the open tailgate of a dusty dark pickup at the edge of a gravel track. Dry grass and
+bare trees behind, an overcast late-afternoon sky. Natural daylight from high and slightly
+BEHIND the camera, soft and even, no hard shadows, no sun flare. No lamp, no reflector.
+
+7 THE PERSON
+Nobody in frame. No hands, no reflections of a person.
+
+8 PRODUCT IN THE SCENE
+The blanket lies open across the tailgate, hanging over its edge with the fringe swinging free
+below. The eagle roundel sits centred and readable. 1:1 with <<<image_1>>>. One blanket, and
+one for the whole clip.
+
+9 ACTION & DIALOGUE, TIMED PRECISELY
+0.0-2.0s: the blanket hangs over the tailgate, the fringe stirring in a light breeze
+          | no line | the camera holds, micro-shake
+2.0-5.5s: the camera moves slowly in, one pace, the eagle roundel growing until it fills the
+          middle of the frame | no line | the fringe keeps swinging on its own rhythm
+5.5-7.0s: the move stops. The weave and the raised gold thread of the border read clearly at
+          this distance | no line
+7.0-8.0s: the camera holds, the fringe settling | FINAL BEAT, hold
+End.
+
+10 DIALOGUE DELIVERY
+No dialogue in this clip.
+
+11 VOICE REGISTER
+No voice.
+
+12 SOUND DESIGN, TIMESTAMPED
+0.0-8.0s: open outdoor air, a light steady breeze, dry grass moving
+2.0-5.5s: gravel shifting once underfoot as the camera moves in
+5.5-8.0s: the soft flick of fringe against painted metal
+NO MUSIC.
+
+13 STYLE
+Overcast outdoor daylight, tailgate, dry winter field. Heavy woven fabric against dusty paint.
+Tactical and outdoor, never home textile.
+Palette: olive drab, gold, dark forest green, matte black, gravel grey, dry straw, overcast
+white, dusty truck paint.
+
+14 CRITICAL RULES
+1. Handheld micro-shake plus one slow move in. No zoom, no orbit, no crane.
+2. The blanket is 100% identical to <<<image_1>>>. Not modified, not restyled, not recoloured,
+   not relabelled. The eagle roundel and the star border stay exactly as they are.
+3. One blanket for the whole clip.
+4. No people, no hands, no reflections of a person.
+5. No text overlay, no captions, no watermark of any kind.
+6. Single light source: overcast daylight from high and behind the camera. No sun flare.
+7. Background identical first frame to last apart from the breeze.
+8. Real time. Not sped up, not slowed. The fringe moves with the weight of real cotton.
+
+15 DO NOT
+DO NOT:
+- NO camera movement (unless the clip brief explicitly asked for handheld micro-shake)
+- NO music
+- NO text overlay, NO captions, NO watermarks, NO logos burned into the frame
+- NO cinematic bokeh, NO shallow depth of field, NO background blur
+- NO glamour lighting, NO ring light, NO studio setup
+- NO HDR, NO colour grading, NO film look
+- NO AI-glossy face, NO plastic skin, NO beauty filter
+- NO slow motion, NO speed ramping, NO time lapse
+- The product is NOT modified, NOT restyled, NOT recoloured, NOT relabelled
+- NO extra hands, NO extra fingers, NO extra people entering frame unless briefed

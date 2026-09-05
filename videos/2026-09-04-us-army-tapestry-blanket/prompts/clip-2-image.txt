@@ -1,0 +1,30 @@
+CLIP 2 - FIRST FRAME - IMAGE PROMPT
+Run this in /brand, confirm the box design, then animate the result as clip 2.
+This is the one frame the whole payoff rests on, which is why clip 2 takes the IMG route.
+
+A photograph taken on an iPhone 12 inside a military surplus store. A metal retail shelf,
+photographed from a standing customer's eye level, slightly from the left, so the shelf runs
+away into the frame at a shallow angle.
+
+On the shelf: six identical square retail boxes, stacked two rows high and three across,
+all facing the camera, all the same design. Each box is olive drab with a black border of
+small gold five-pointed stars. In the centre of each box, a flat two-colour illustration of
+a rolled and folded blanket in olive and tan on a sunburst ground. Across the top of each
+box in bold condensed black capitals: ARMYWORKS. Small gold star at each corner.
+
+Around the boxes on the same shelving: coyote-brown combat boots below, tan and olive
+tactical pouches above. White pegboard behind. White speckled tile floor.
+
+Bright cool fluorescent tube lighting from directly overhead, straight down. Deep focus, the
+boxes at the far end of the shelf as sharp as the near ones. No bokeh, no background blur.
+Fine natural grain, no colour grading, vivid but natural colour.
+
+Vertical 9:16.
+
+DO NOT:
+- NO shallow depth of field, NO bokeh
+- NO studio lighting, NO ring light, NO product-photography look
+- NO text other than ARMYWORKS on the boxes
+- NO people, NO hands
+- NO HDR, NO colour grading, NO film look
+- The boxes are all identical. No variant designs, no different sizes.

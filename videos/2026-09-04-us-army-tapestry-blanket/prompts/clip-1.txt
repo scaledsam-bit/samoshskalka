@@ -1,0 +1,87 @@
+CLIP 1 - HOOK - T5 STORE DISCOVERY - T2V - generate 4.0s, edit trims to 2.900s
+No reference images. The person is written, never attached. The product is not in this shot.
+
+1 OPENING LINE
+A 4-second vertical (9:16) UGC video. Format: store discovery hook. Authentic iPhone 12 filmed
+aesthetic. A guy in uniform reacts to something on a shop shelf and drops his drink.
+
+2 CAMERA & FRAMING
+- Back camera of a phone, held in one hand at chest height, natural handheld micro-shake,
+  NOT stabilized, NOT gimbal.
+- Medium shot, subject from the waist up, standing slightly off-centre to the left of frame.
+- The camera holds on him, then whips right at the end of the beat.
+- Natural relaxed framing, NOT cinematic, NOT artistic.
+
+3 REFERENCE IMAGES
+None. Do not invent a logo, a label or a brand name anywhere in frame.
+
+4 IMAGE QUALITY
+Deep focus, no bokeh, standard iPhone camera, no colour grading, fine natural grain.
+
+5 THE LOCATION
+Interior of a military surplus store. A narrow aisle between two metal shelving units. Tan and
+olive tactical pouches, plate carriers and coyote-brown boots on the shelves, a white speckled
+tile floor. Bright cool fluorescent tube lighting from directly overhead, straight down.
+
+7 THE PERSON
+A man in his late twenties. Fair skin, short-cropped mid-brown hair, light stubble, lean build,
+about 180 cm. He wears a loose OCP camouflage combat uniform, sleeves down. In his right hand
+he holds a clear plastic cup of amber liquid. His expression starts as open-mouthed shock.
+
+8 PRODUCT IN THE SCENE
+No product in this shot. The shelves hold generic tactical gear only.
+
+9 ACTION & DIALOGUE, TIMED PRECISELY
+0.0-0.6s: he stares off to the right, eyes wide, left hand flying up to his mouth | "Oh my god."
+          | said under his breath, genuinely startled | camera holds, micro-shake
+0.6-1.2s: his right hand goes slack, the cup slips, falls and hits the tile floor, the liquid
+          splashing outward across the tiles | no line | camera holds, he does not look down
+1.2-2.0s: he thrusts his left index finger toward the right, mouth still open | "No way."
+          | half-whispered, disbelieving | camera holds
+2.0-2.9s: the camera whips hard to the right, following his finger, the shelves smearing into
+          motion blur | no line | FINAL BEAT
+2.9-4.0s: the whip continues past more shelving and settles. Throwaway tail, trimmed in the edit.
+End.
+
+10 DIALOGUE DELIVERY
+"Oh my god." - low, air-filled, the first half-second of real surprise, not projected.
+"No way." - half-whisper, rising, talking to himself rather than to the camera.
+
+11 VOICE REGISTER
+Casual American male, mid-range. Like he is filming for one friend and forgot the camera is on.
+NOT performative, NOT scripted, NOT announcer.
+
+12 SOUND DESIGN, TIMESTAMPED
+0.0-4.0s: quiet store-room tone, the faint hum of fluorescent tubes
+0.6s: the hard hollow knock of a plastic cup hitting tile, then the wet slap of liquid spreading
+2.0-2.9s: fabric rustle from the sleeve as the arm moves, a soft rush as the camera whips
+NO MUSIC.
+
+13 STYLE
+Flat, bright, unglamorous shop interior. Real-time, unpolished, filmed by a customer.
+Palette: olive drab, coyote tan, OCP green-brown, white tile, cool fluorescent white,
+amber liquid, matte black shelf uprights.
+
+14 CRITICAL RULES
+1. Handheld micro-shake only. No gimbal, no dolly, no crane. The whip at 2.0s is a hand movement.
+2. Face and identity are locked for the whole clip. One man, no other people enter frame.
+3. Only two hands in frame, both his.
+4. No text overlay, no captions, no watermark, no logo anywhere in the frame.
+5. The cup falls with real weight and the liquid behaves like liquid. No slow motion.
+6. Background is identical from first frame to last, apart from the pan.
+7. Single light source: overhead fluorescent, straight down.
+8. The whip pan must be complete by 2.9s. Everything after that is trimmed.
+9. Real time throughout. Not sped up, not slowed.
+
+15 DO NOT
+DO NOT:
+- NO camera movement (unless the clip brief explicitly asked for handheld micro-shake)
+- NO music
+- NO text overlay, NO captions, NO watermarks, NO logos burned into the frame
+- NO cinematic bokeh, NO shallow depth of field, NO background blur
+- NO glamour lighting, NO ring light, NO studio setup
+- NO HDR, NO colour grading, NO film look
+- NO AI-glossy face, NO plastic skin, NO beauty filter
+- NO slow motion, NO speed ramping, NO time lapse
+- The product is NOT modified, NOT restyled, NOT recoloured, NOT relabelled
+- NO extra hands, NO extra fingers, NO extra people entering frame unless briefed

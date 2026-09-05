@@ -1,0 +1,13 @@
+{
+  "product": "ARMYWORKS U.S. Army woven tapestry throw blanket",
+  "brand": "ARMYWORKS",
+  "clips": {
+    "unbox": {"prompt": "prompts/unbox.txt", "duration": 7.0, "file": "clips/unbox.mp4", "status": "not_generated"},
+    "showcase": {"prompt": "prompts/showcase.txt", "duration": 8.0, "file": "clips/showcase.mp4", "status": "not_generated"}
+  },
+  "caption": "",
+  "hashtags": "",
+  "hook_text": "",
+  "sound": "",
+  "_note": "caption, hashtags, hook_text and sound are the same on every video of this product. Fill them once, in /post, and every later video reads them from here."
+}

@@ -1,0 +1,82 @@
+CLIP 2 - SHOWCASE - T5 STORE DISCOVERY - IMG - generate 4.0s, edit trims to 3.142s
+Start frame: the approved image from clip-2-image.txt. Product reference: the locked box element.
+
+<<<image_1>>>
+
+1 OPENING LINE
+A 4-second vertical (9:16) UGC video. Format: store discovery payoff. Authentic iPhone 12 filmed
+aesthetic. The camera has just whipped onto a shelf full of the product and settles on it.
+
+2 CAMERA & FRAMING
+- Back camera of a phone, one hand, natural handheld micro-shake, NOT stabilized, NOT gimbal.
+- Medium shot of the shelf, the boxes filling most of the frame.
+- Movement: a slow drift to the right, no more than a hand's width across the whole clip.
+  No zoom, no push in.
+- Natural relaxed framing, NOT cinematic, NOT artistic.
+
+3 USE REFERENCE IMAGE 1 FOR THE BOXES ONLY
+Take the box design from <<<image_1>>> exactly: the olive ground, the gold star border, the
+blanket illustration, the ARMYWORKS wordmark, the proportions. Do NOT take the camera angle,
+the exact shelf layout or the crop from it. Do not restyle, recolour or relabel the box.
+
+4 IMAGE QUALITY
+Deep focus, no bokeh, standard iPhone camera, no colour grading, fine natural grain.
+
+5 THE LOCATION
+The same military surplus store aisle as the previous shot. Metal shelving, white pegboard
+behind, coyote-brown boots on the shelf below, tan and olive tactical pouches above, white
+speckled tile floor. Bright cool fluorescent tube lighting from directly overhead, straight down.
+
+7 THE PERSON
+Nobody in frame. No hands, no reflections of a person.
+
+8 PRODUCT IN THE SCENE
+Six identical ARMYWORKS boxes, two rows of three, face-on to the camera on the middle shelf.
+They sit flat and square, catching the flat overhead light with no highlight or gloss. 1:1 with
+<<<image_1>>>. The same six boxes for the whole clip: the count never changes.
+
+9 ACTION & DIALOGUE, TIMED PRECISELY
+0.0-0.4s: the frame settles out of the incoming whip, a last shudder of handheld motion
+          | no line | the boxes come into focus
+0.4-3.1s: the camera holds on the shelf and drifts a hand's width to the right, micro-shake
+          throughout | no line | nothing else in frame moves | FINAL BEAT
+3.1-4.0s: the drift continues. Throwaway tail, trimmed in the edit.
+End.
+
+10 DIALOGUE DELIVERY
+No dialogue in this clip.
+
+11 VOICE REGISTER
+No voice.
+
+12 SOUND DESIGN, TIMESTAMPED
+0.0-4.0s: quiet store-room tone, the faint hum of fluorescent tubes, a distant footstep once
+NO MUSIC.
+
+13 STYLE
+Flat, bright, unglamorous shop shelf, filmed by a customer who just found something.
+Palette: olive drab, gold star yellow, matte black, coyote tan, white pegboard,
+cool fluorescent white, white tile.
+
+14 CRITICAL RULES
+1. Handheld micro-shake plus a slow rightward drift. Nothing else. No zoom, no push in.
+2. The box is 100% identical to <<<image_1>>>. Not modified, not restyled, not relabelled.
+3. Six boxes, and six for the whole clip. The count never changes between frames.
+4. No text overlay, no captions, no watermark beyond the ARMYWORKS wordmark printed on the box.
+5. No people, no hands, no reflections of a person.
+6. Background identical first frame to last.
+7. Single light source: overhead fluorescent, straight down.
+8. Real time. Not sped up, not slowed.
+
+15 DO NOT
+DO NOT:
+- NO camera movement (unless the clip brief explicitly asked for handheld micro-shake)
+- NO music
+- NO text overlay, NO captions, NO watermarks, NO logos burned into the frame
+- NO cinematic bokeh, NO shallow depth of field, NO background blur
+- NO glamour lighting, NO ring light, NO studio setup
+- NO HDR, NO colour grading, NO film look
+- NO AI-glossy face, NO plastic skin, NO beauty filter
+- NO slow motion, NO speed ramping, NO time lapse
+- The product is NOT modified, NOT restyled, NOT recoloured, NOT relabelled
+- NO extra hands, NO extra fingers, NO extra people entering frame unless briefed

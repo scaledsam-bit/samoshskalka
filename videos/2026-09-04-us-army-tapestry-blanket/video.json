@@ -15,7 +15,7 @@
     ],
     "verdict": "Weak on the filter. The two missing axes are novel format and problem-solving, and no prompt fixes that. It sells on emotion, not on demonstration, so the format has to carry what the object cannot."
   },
-  "status": "plan_approved_pending_brand_confirmation",
+  "status": "prompts_ready",
   "locked": {},
   "reference": {
     "path": "videos/2026-09-04-us-army-tapestry-blanket/reference.mp4",
@@ -77,6 +77,30 @@
       ],
       "route_reason": "IMG because the composition is the whole payoff and the packaging must be 1:1 with the locked box. T2V invents its own box art.",
       "approved": true
+    },
+    {
+      "n": 3,
+      "type": "unbox",
+      "template": "T2",
+      "route": "T2V",
+      "duration": 7.0,
+      "desc": "POV overhead, two hands only, completely static camera. The ARMYWORKS box is opened and the folded blanket lifted out.",
+      "refs": [
+        "produkt <<<image_1>>>"
+      ],
+      "library": true
+    },
+    {
+      "n": 4,
+      "type": "showcase",
+      "template": "GENERAL",
+      "route": "T2V",
+      "duration": 8.0,
+      "desc": "The blanket outdoors over a tailgate, slow handheld move in. Tactical framing, not home textile.",
+      "refs": [
+        "produkt <<<image_1>>>"
+      ],
+      "library": true
     }
   ],
   "clips": [],
@@ -109,12 +133,13 @@
     },
     {
       "gate": "brand",
-      "verdict": "student named the brand 'armyworks'",
-      "open_question": "ARMYWORKS is the brand printed on the boxes in the reference video. Confirm the student owns it before /brand generates packaging under that name."
+      "verdict": "ARMYWORKS confirmed as the student's own brand"
     }
   ],
   "brand": {
-    "name": "armyworks",
-    "confirmed": false
-  }
+    "name": "ARMYWORKS",
+    "confirmed": true,
+    "note": "Student's own brand. The boxes in the reference are theirs, so this is not a competitor payoff after all."
+  },
+  "generation_note": "Seedance's floor is 4 s but segments 1 and 2 are 2.900 s and 3.142 s. Generate both at 4 s and let cutsheet.sh trim them: it keeps the FIRST len seconds, so every beat must land inside the segment length and the tail is throwaway. Trim is 27% and 21%, under the 40% heavy-trim warning."
 }
