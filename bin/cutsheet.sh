@@ -5,7 +5,9 @@
 #   cutsheet.sh REFERENCE CLIPSDIR                 map clips onto the segments
 #   cutsheet.sh REFERENCE CLIPSDIR --build OUT     build the finished video
 #
-# Options:  --threshold N (scene sensitivity 0.1-0.9, default 0.30)
+# Options:  --extend      append clips past the last segment at their own length,
+#                         instead of leaving them out of the build
+#           --threshold N (scene sensitivity 0.1-0.9, default 0.30)
 #           --min N       (merge segments shorter than N seconds, default 0.35)
 #           --height N    (output height, default 1280 for 720p vertical)
 #           --fps N       (output frame rate, default 60)
@@ -20,7 +22,7 @@
 
 set -u
 
-REF=""; CLIPS=""; OUT=""; THRESH="0.30"; MIN="0.35"; MANUAL=""; HEIGHT="1280"; FPS="60"; PAD=0
+REF=""; CLIPS=""; OUT=""; THRESH="0.30"; MIN="0.35"; MANUAL=""; HEIGHT="1280"; FPS="60"; PAD=0; EXTEND=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -28,10 +30,11 @@ while [ $# -gt 0 ]; do
     --height)    HEIGHT="${2:-}"; shift 2 ;;
     --fps)       FPS="${2:-}";    shift 2 ;;
     --pad)       PAD=1;           shift   ;;
+    --extend)    EXTEND=1;        shift   ;;
     --threshold) THRESH="${2:-}"; shift 2 ;;
     --min)       MIN="${2:-}";    shift 2 ;;
     --cuts)      MANUAL="${2:-}";  shift 2 ;;
-    -h|--help)   sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help)   sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) if [ -z "$REF" ]; then REF="$1"; elif [ -z "$CLIPS" ]; then CLIPS="$1";
        else echo "cutsheet: unexpected argument: $1" >&2; exit 2; fi; shift ;;
   esac
@@ -132,10 +135,32 @@ while read -r idx s e len; do
 done < "$TMP/segments.txt"
 
 EXTRA=$((NCLIP - NSEG))
+
+if [ "$EXTEND" -eq 1 ] && [ "$EXTRA" -gt 0 ]; then
+  i="$NSEG"
+  while [ "$i" -lt "$NCLIP" ]; do
+    i=$((i+1))
+    clip=$(sed -n "${i}p" "$TMP/clips.txt")
+    cdur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$clip" 2>/dev/null | cut -d, -f1)
+    case "$cdur" in ''|N/A) cdur=0 ;; esac
+    printf '  %-3d %8s   %-28s %9.3f %7s   appended, own length\n' \
+      "$i" "-" "$(basename "$clip")" "$cdur" "-"
+    printf '%s\t%s\n' "$clip" "$cdur" >> "$TMP/plan.txt"
+  done
+fi
+
 printf '\n'
-[ "$EXTRA" -gt 0 ] && printf 'NOTE  %d clip(s) beyond the last segment, unused.\n' "$EXTRA"
+if [ "$EXTRA" -gt 0 ]; then
+  if [ "$EXTEND" -eq 1 ]; then
+    printf 'NOTE  %d clip(s) appended past the reference. They run at their own length and have\n' "$EXTRA"
+    printf '      NO soundtrack under them: the reference audio ends where the reference does.\n'
+  else
+    printf 'NOTE  %d clip(s) beyond the last segment, left out of the build. Pass --extend to keep them.\n' "$EXTRA"
+  fi
+fi
 [ "$WARN" -gt 0 ]  && printf 'WARN  %d segment(s) need attention before the edit.\n' "$WARN"
 [ "$WARN" -eq 0 ] && [ "$EXTRA" -le 0 ] && printf 'All segments covered.\n'
+[ "$WARN" -eq 0 ] && [ "$EXTRA" -gt 0 ] && [ "$EXTEND" -eq 1 ] && printf 'All segments covered, plus %d appended.\n' "$EXTRA"
 
 [ -z "$OUT" ] && exit 0
 
@@ -180,7 +205,11 @@ if ffprobe -v error -select_streams a -show_entries stream=index -of csv=p=0 "$R
   ffmpeg -nostdin -v error -y -i "$TMP/video.mp4" -i "$REF" \
     -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 192k -ar 48000 \
     -af "apad" -t "$VDUR" -movflags +faststart "$OUT" || exit 4
-  AUDIO="original soundtrack"
+  if awk -v a="$VDUR" -v b="$DUR" 'BEGIN{exit !(a > b+0.05)}'; then
+    AUDIO=$(awk -v b="$DUR" 'BEGIN{printf "original soundtrack for the first %.2f s, silent after", b}')
+  else
+    AUDIO="original soundtrack"
+  fi
 else
   ffmpeg -nostdin -v error -y -i "$TMP/video.mp4" -c:v copy -movflags +faststart "$OUT" || exit 4
   AUDIO="silent, the reference had no audio track"
@@ -192,6 +221,10 @@ DRIFT=$(awk -v a="$FIN" -v b="$DUR" 'BEGIN{d=a-b; if(d<0)d=-d; printf "%.3f", d}
 
 printf '\nREADY  %s\n' "$OUT"
 printf '  %s  %.3f s  %s fps  %s\n' "$RES" "$FIN" "$FPS" "$AUDIO"
-printf '  reference %.3f s, drift %s s\n' "$DUR" "$DRIFT"
+if [ "$EXTEND" -eq 1 ] && [ "$EXTRA" -gt 0 ]; then
+  printf '  reference %.3f s, appended clips carry the rest. Drift is not meaningful here.\n' "$DUR"
+else
+  printf '  reference %.3f s, drift %s s\n' "$DUR" "$DRIFT"
+fi
 [ "$PAD" -eq 1 ] && printf '  NOTE built with --pad, any short clip holds its last frame\n'
 printf '\nWatch it once, then upload to TikTok and add the hook text there.\n'

@@ -37,6 +37,22 @@ student explicitly accepts a visible frame hold should you re-run with `--pad`.
 
 `--height` and `--fps` override the defaults if they ever need to.
 
+### When the video is longer than the reference
+
+The house three act runs about 21 s while a hook reference is often 6 s, so the unboxing and
+the showcase sit past the end of the cut sheet. Without `--extend` they are silently left out
+of the build and the sheet says so. With it they are appended at their own length:
+
+```
+./bin/cutsheet.sh videos/$slug/reference.mp4 videos/$slug/clips \
+    --cuts <the same list /concept used> --extend --build videos/$slug/out/final.mp4
+```
+
+**The appended part has no soundtrack.** The reference's audio ends where the reference does
+and the rest is silence, which the READY line states. Say it to the student rather than letting
+them find it on playback: either they add a sound in TikTok, or the reference needs to cover
+the whole shape next time.
+
 ## 3. Burn the hook text in
 
 ```
