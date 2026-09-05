@@ -21,3 +21,5 @@ This is the only part of the system that makes the output better. The rest only 
 - Prefer letting a shock beat play out physically — the cup drops to the floor rather than being edited away — because the reaction sells the hook better than a clean frame.
 - Prefer the house three act — hook, then POV unboxing, then product showcase — for every product unless a reference says otherwise, because that is the shape they publish and it should never need restating.
 - Prefer asking for a reference video that covers the whole shape rather than only the hook, because bin/cutsheet.sh can only build a video as long as the reference it is cut against.
+- Prefer generating the unboxing and showcase once per product and reusing the same files in every video, because only the hook actually changes and regenerating the rest burns credits for nothing.
+- Prefer the same caption, hashtags and sound on every video of a product, kept in library/<product>/kit.json, because the format is the constant and the hook is the only variable.
