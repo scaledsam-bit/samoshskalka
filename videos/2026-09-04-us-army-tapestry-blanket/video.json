@@ -19,15 +19,27 @@
   "locked": {},
   "reference": {
     "path": "",
-    "photos": [],
-    "photos_status": "MISSING - product photo was pasted into chat, never landed on disk. Must be re-attached as a file before /brand or /gen.",
+    "photos": [
+      {
+        "higgsfield_media_id": "0303854c-eebc-4143-acb2-e5dff9dee714",
+        "what": "product photo, full flat lay of the blanket"
+      }
+    ],
     "cuts": [],
-    "segments": []
+    "segments": [],
+    "higgsfield_media_id": "ec84d1e9-0cdd-43a6-95c0-fe9bd08ec3c1",
+    "path_status": "MISSING LOCALLY - reference lives only in Higgsfield storage; cloudfront is blocked by the egress proxy so it cannot be downloaded here. bin/cutsheet.sh and /edit both need a local file.",
+    "analysis_job_id": "c58574e7-c09a-4c10-9dee-384a87e4338c"
   },
   "plan": [],
   "clips": [],
   "notes": [
     "Trademark: U.S. Army marks and the Army seal are licensed through the Army Trademark Licensing Program. Selling merchandise carrying them without a licence is a live legal risk, separate from anything in this pipeline.",
     "Format implication of the score: lead with the gifting or homecoming moment, not a product demo. The reveal is the unfold."
-  ]
+  ],
+  "higgsfield": {
+    "workspace_id": "131a51a3-883c-492f-98f4-2eba9a95fb1b",
+    "plan": "ultra",
+    "credits_at_check": 4671
+  }
 }
