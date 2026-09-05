@@ -22,7 +22,10 @@
       "Bash(./bin/fetch.sh:*)",
       "Bash(bash ./bin/fetch.sh:*)",
       "Bash(bin/fetch.sh:*)",
-      "Bash(yt-dlp:*)"
+      "Bash(yt-dlp:*)",
+      "Bash(./bin/sound.sh:*)",
+      "Bash(bash ./bin/sound.sh:*)",
+      "Bash(bin/sound.sh:*)"
     ]
   }
 }

@@ -49,6 +49,29 @@ timeline once and pass them by hand:
 If there is only a screenshot of the first frame, there is no rhythm to extract. Say so, and
 build the plan from the concept alone.
 
+## 1b. Read the soundtrack
+
+```
+./bin/sound.sh <slug>
+```
+
+Always, on every reference, before writing the plan. It prints whether the track is music or
+speech, where it is loud, where it goes quiet, and every transient with its level, and it files
+the result in `library/sounds.jsonl` so the bank grows one reference at a time.
+
+Three things in that output change the prompts, so read it before writing them, not after:
+
+- **`/edit` lays the reference's own audio over the finished video and throws every generated
+  clip's audio away.** Any beat the original does not have arrives silent. Put it on the hardest
+  transient or drop it.
+- **Mouth movement is locked to the LOUD windows.** A character speaking during a QUIET stretch
+  is visibly broken lip sync, and it is free to prevent and expensive to discover.
+- **Clips that run past the end of the reference have no soundtrack at all.**
+
+Nothing here can name a track: no audio fingerprinting exists in this pipeline, and TikTok
+cannot be crawled. If the student wants the official sound for the algorithm, they read its
+name off the original post in TikTok and attach it there. The bank is for shape, not for titles.
+
 ## 2. Read the scenes
 
 For a longer or more complex reference, also run `video_analysis_create` for a scene by scene
