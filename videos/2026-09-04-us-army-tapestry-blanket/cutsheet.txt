@@ -1,0 +1,14 @@
+REFERENCE  videos/2026-09-04-us-army-tapestry-blanket/reference.mp4
+DURATION   6.042 s   SEGMENTS 2   CUTS given by hand (whip pan at 2.9s)
+
+  #   START      END     LENGTH
+  1      0.000    2.900     2.900
+  2      2.900    6.042     3.142
+
+Detection at the default threshold returns one segment: the reference is a single
+continuous take. The 2.9s join is a whip pan, not a cut, so it must be passed by hand.
+
+Build with:
+  ./bin/cutsheet.sh videos/2026-09-04-us-army-tapestry-blanket/reference.mp4 \
+      videos/2026-09-04-us-army-tapestry-blanket/clips \
+      --cuts 2.9 --build videos/2026-09-04-us-army-tapestry-blanket/out/final.mp4

@@ -15,23 +15,68 @@
     ],
     "verdict": "Weak on the filter. The two missing axes are novel format and problem-solving, and no prompt fixes that. It sells on emotion, not on demonstration, so the format has to carry what the object cannot."
   },
-  "status": "awaiting_product_approval",
+  "status": "awaiting_plan_approval",
   "locked": {},
   "reference": {
-    "path": "",
+    "path": "videos/2026-09-04-us-army-tapestry-blanket/reference.mp4",
     "photos": [
       {
         "higgsfield_media_id": "0303854c-eebc-4143-acb2-e5dff9dee714",
         "what": "product photo, full flat lay of the blanket"
       }
     ],
-    "cuts": [],
-    "segments": [],
+    "cuts": [
+      2.9
+    ],
+    "segments": [
+      {
+        "n": 1,
+        "start": 0.0,
+        "end": 2.9,
+        "length": 2.9
+      },
+      {
+        "n": 2,
+        "start": 2.9,
+        "end": 6.042,
+        "length": 3.142
+      }
+    ],
     "higgsfield_media_id": "ec84d1e9-0cdd-43a6-95c0-fe9bd08ec3c1",
     "path_status": "MISSING LOCALLY - reference lives only in Higgsfield storage; cloudfront is blocked by the egress proxy so it cannot be downloaded here. bin/cutsheet.sh and /edit both need a local file.",
-    "analysis_job_id": "c58574e7-c09a-4c10-9dee-384a87e4338c"
+    "analysis_job_id": "c58574e7-c09a-4c10-9dee-384a87e4338c",
+    "duration": 6.042,
+    "fps": 24,
+    "resolution": "720x1280",
+    "has_audio": true,
+    "rotation_metadata": -180,
+    "rotation_note": "Display matrix says -180 but the stored pixels are already upright. Read frames with -noautorotate. Harmless for the build: cutsheet.sh takes only audio from the reference.",
+    "cuts_source": "forced. Luma detection returns ONE segment at every sane threshold because the reference is a single continuous take. The join at 2.9s is a whip pan, not a cut. /edit MUST be run as: ./bin/cutsheet.sh <ref> <clipsdir> --cuts 2.9 --build <out>",
+    "analysis": "Higgsfield job c58574e7 completed, 2 scenes, split at 0:02. Agrees with the frame read."
   },
-  "plan": [],
+  "plan": [
+    {
+      "n": 1,
+      "type": "hook",
+      "template": "T5",
+      "route": "T2V",
+      "duration": 2.9,
+      "desc": "Military surplus store aisle, handheld back camera. Man in his late 20s in OCP camo, short brown hair, light stubble, waist up. Shock reaction, hand to mouth, then points off to the right. Camera whips right at the end of the beat, ending in motion blur so the join is invisible.",
+      "refs": []
+    },
+    {
+      "n": 2,
+      "type": "showcase",
+      "template": "T5",
+      "route": "IMG",
+      "duration": 3.142,
+      "desc": "The pan lands on a retail shelf wall stacked with our own branded blanket boxes, four to six visible, identical. Slow handheld drift, no zoom. Tactical pouches and boots on the shelves around them.",
+      "refs": [
+        "box (locked in /brand)"
+      ],
+      "route_reason": "IMG because the composition is the whole payoff and the packaging must be 1:1 with the locked box. T2V invents its own box art."
+    }
+  ],
   "clips": [],
   "notes": [
     "Trademark: U.S. Army marks and the Army seal are licensed through the Army Trademark Licensing Program. Selling merchandise carrying them without a licence is a live legal risk, separate from anything in this pipeline.",
@@ -41,5 +86,13 @@
     "workspace_id": "131a51a3-883c-492f-98f4-2eba9a95fb1b",
     "plan": "ultra",
     "credits_at_check": 4671
-  }
+  },
+  "risks": [
+    "The reference never shows the blanket. It sells a wall of packaging in a shop, which is retail credibility, not the emotional gift angle the 3/6 score pointed at. This format plays to the product's weakest side.",
+    "The payoff in the reference is a COMPETITOR brand (ARMYWORKS). /brand is mandatory before /prompts can write clip 2, and the box has to be designed from scratch: the uploaded photo is the blanket, not a box.",
+    "The reference has the actor holding a cup of beer inside a shop. Odd for this audience and a needless content-filter risk. Recommend dropping the prop.",
+    "The whip pan is the most motion-heavy second in the piece. Keep the motion sentence short in clip 1; overstuffed motion is the top cause of a bad generation.",
+    "Person appears only in clip 1, so no cross-clip identity lock is needed. That is the one thing this split makes easier.",
+    "Default cut detection finds ONE segment. Running /edit without --cuts 2.9 would map clip 1 onto the whole 6s and silently drop clip 2."
+  ]
 }
