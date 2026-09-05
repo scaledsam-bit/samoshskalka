@@ -15,7 +15,7 @@
     ],
     "verdict": "Weak on the filter. The two missing axes are novel format and problem-solving, and no prompt fixes that. It sells on emotion, not on demonstration, so the format has to carry what the object cannot."
   },
-  "status": "awaiting_plan_approval",
+  "status": "plan_approved_pending_brand_confirmation",
   "locked": {},
   "reference": {
     "path": "videos/2026-09-04-us-army-tapestry-blanket/reference.mp4",
@@ -61,8 +61,9 @@
       "template": "T5",
       "route": "T2V",
       "duration": 2.9,
-      "desc": "Military surplus store aisle, handheld back camera. Man in his late 20s in OCP camo, short brown hair, light stubble, waist up. Shock reaction, hand to mouth, then points off to the right. Camera whips right at the end of the beat, ending in motion blur so the join is invisible.",
-      "refs": []
+      "desc": "Military surplus store aisle, handheld back camera. Man in his late 20s in OCP camo, short brown hair, light stubble, waist up. He is holding a clear plastic cup. Shock reaction, hand to mouth, the cup slips and drops to the floor, then he points off to the right. Camera whips right at the end of the beat, ending in motion blur so the join is invisible.",
+      "refs": [],
+      "approved": true
     },
     {
       "n": 2,
@@ -74,7 +75,8 @@
       "refs": [
         "box (locked in /brand)"
       ],
-      "route_reason": "IMG because the composition is the whole payoff and the packaging must be 1:1 with the locked box. T2V invents its own box art."
+      "route_reason": "IMG because the composition is the whole payoff and the packaging must be 1:1 with the locked box. T2V invents its own box art.",
+      "approved": true
     }
   ],
   "clips": [],
@@ -94,5 +96,25 @@
     "The whip pan is the most motion-heavy second in the piece. Keep the motion sentence short in clip 1; overstuffed motion is the top cause of a bad generation.",
     "Person appears only in clip 1, so no cross-clip identity lock is needed. That is the one thing this split makes easier.",
     "Default cut detection finds ONE segment. Running /edit without --cuts 2.9 would map clip 1 onto the whole 6s and silently drop clip 2."
-  ]
+  ],
+  "decisions": [
+    {
+      "gate": "plan",
+      "verdict": "approved",
+      "by": "student"
+    },
+    {
+      "gate": "prop",
+      "verdict": "the cup is kept and dropped on the floor on the shock beat, not removed"
+    },
+    {
+      "gate": "brand",
+      "verdict": "student named the brand 'armyworks'",
+      "open_question": "ARMYWORKS is the brand printed on the boxes in the reference video. Confirm the student owns it before /brand generates packaging under that name."
+    }
+  ],
+  "brand": {
+    "name": "armyworks",
+    "confirmed": false
+  }
 }
