@@ -15,7 +15,7 @@
     ],
     "verdict": "Weak on the filter. The two missing axes are novel format and problem-solving, and no prompt fixes that. It sells on emotion, not on demonstration, so the format has to carry what the object cannot."
   },
-  "status": "prompts_ready",
+  "status": "ready_to_generate_hook",
   "locked": {},
   "reference": {
     "path": "videos/2026-09-04-us-army-tapestry-blanket/reference.mp4",
@@ -137,13 +137,15 @@
       "n": 3,
       "type": "unbox",
       "template": "T2",
-      "route": "T2V",
-      "duration": 7.0,
-      "desc": "POV overhead, two hands only, completely static camera. The ARMYWORKS box is opened and the folded blanket lifted out.",
+      "route": "library_file",
+      "duration": 6.042,
+      "desc": "POV unboxing over a wooden table, soldier's sleeves and dog tags, box opened and blanket unfolded to the roundel. Student's own file.",
       "refs": [
         "produkt <<<image_1>>>"
       ],
-      "library": true
+      "library": true,
+      "source": "library/armyworks-tapestry-blanket/clips/unbox.mp4",
+      "generate": false
     },
     {
       "n": 4,
@@ -199,5 +201,9 @@
     "note": "Student's own brand. The boxes in the reference are theirs, so this is not a competitor payoff after all."
   },
   "generation_note": "Seedance's floor is 4 s but segments 1 and 2 are 2.900 s and 3.142 s. Generate both at 4 s and let cutsheet.sh trim them: it keeps the FIRST len seconds, so every beat must land inside the segment length and the tail is throwaway. Trim is 27% and 21%, under the 40% heavy-trim warning.",
-  "total_length": 25.084
+  "total_length": 24.126,
+  "remaining_to_generate": [
+    "clip 1 (hook, 4.0s)",
+    "clip 2 (shelf wall, 4.0s, IMG from the box reference)"
+  ]
 }

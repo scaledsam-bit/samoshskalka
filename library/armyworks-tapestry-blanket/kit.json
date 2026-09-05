@@ -3,10 +3,11 @@
   "brand": "ARMYWORKS",
   "clips": {
     "unbox": {
-      "prompt": "prompts/unbox.txt",
-      "duration": 7.0,
       "file": "clips/unbox.mp4",
-      "status": "not_generated"
+      "duration": 6.042,
+      "status": "supplied_by_student",
+      "what": "POV over a wooden table. Soldier in OCP sleeves with dog tags opens the ARMYWORKS box and unfolds the blanket to the roundel.",
+      "note": "Student's own file. Do not regenerate."
     },
     "showcase": {
       "file": "clips/showcase.mp4",
@@ -20,5 +21,7 @@
   "hashtags": "",
   "hook_text": "",
   "sound": "",
-  "_note": "caption, hashtags, hook_text and sound are the same on every video of this product. Fill them once, in /post, and every later video reads them from here."
+  "_note": "caption, hashtags, hook_text and sound are the same on every video of this product. Fill them once, in /post, and every later video reads them from here.",
+  "box_reference": "box-reference.png",
+  "box_reference_note": "Lifted from the first frame of unbox.mp4. The ARMYWORKS box already exists here, so /brand does not need to design one and clip 2 can attach this instead."
 }
