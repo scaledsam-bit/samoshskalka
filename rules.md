@@ -24,3 +24,4 @@ This is the only part of the system that makes the output better. The rest only 
 - Prefer generating the unboxing and showcase once per product and reusing the same files in every video, because only the hook actually changes and regenerating the rest burns credits for nothing.
 - Prefer the same caption, hashtags and sound on every video of a product, kept in library/<product>/kit.json, because the format is the constant and the hook is the only variable.
 - Prefer reading the reference soundtrack with bin/sound.sh before writing any prompt, because the edit lays that track over the finished video and a beat the original never had arrives silent.
+- Prefer three or four short lines and no tables, because long structured answers do not get read and the detail belongs in the files, not in the chat.
